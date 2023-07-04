@@ -1,11 +1,14 @@
 const express = require("express");
-const db = require("./db/connection");
+const connectToMongo = require("./db/connection");
 
 const app = express();
 const port = 3000;
 
-db.connect();
 
 app.listen(port, () => {
     console.log(`Server is running on ${port}`);
+    connectToMongo();
 });
+
+
+module.exports = app;
