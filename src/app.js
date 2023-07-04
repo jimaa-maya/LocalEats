@@ -4,6 +4,8 @@ const db = require("./db/connection");
 const app = express();
 const port = 3000;
 
+db.connect();
+
 app.listen(port, () => {
     console.log(`Server is running on ${port}`);
 });
