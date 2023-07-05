@@ -17,8 +17,9 @@
   "dependencies": {
     "dotenv": "^14.2.0",
     "express": "^4.17.2",
-    "mongoose": "^7.3.1",
-    "yarn-upgrade-all": "^0.6.1"
+    "yarn-upgrade-all": "^0.6.1",
+    "mongodb": "^5.0.17",
+    "mongoose": "^7.3.1"
   },
   "devDependencies": {
     "eslint": "^8.7.0",
