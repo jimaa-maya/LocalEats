@@ -14,13 +14,13 @@ const cartSchema = new mongoose.Schema({
     dish_id: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
-        ref: 'Dish'
+        ref: 'Dishes'
     },
     quantity: {
         type: Number,
         required: true
     },
-    added_date: {
+    addedDate: {
         type: Date,
         default: Date.now
     },
