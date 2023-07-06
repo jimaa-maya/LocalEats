@@ -1,6 +1,18 @@
 const mongoose = require('mongoose');
 
 const dishesSchema = mongoose.Schema({
+  dish_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    equired: true,
+    unique: true,
+    default: mongoose.Types.ObjectId,
+  },
+  user_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    equired: true,
+    unique: true,
+    default: mongoose.Types.ObjectId,
+  },
   dishName: {
     type: String,
     required: true,
