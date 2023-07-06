@@ -9,7 +9,7 @@ const dishesSchema = mongoose.Schema({
     type: String,
   },
   image_url: {
-    type: String,
+    type: Buffer,
   },
   price: {
     type: Number,
@@ -17,6 +17,7 @@ const dishesSchema = mongoose.Schema({
   },
   review: {
     type: [String],
+    default: [],
   },
 });
 module.exports = mongoose.model('Dishes', dishesSchema);
