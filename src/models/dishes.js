@@ -12,6 +12,7 @@ const dishesSchema = mongoose.Schema({
     equired: true,
     unique: true,
     default: mongoose.Types.ObjectId,
+    ref: 'Users',
   },
   dishName: {
     type: String,
