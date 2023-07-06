@@ -3,14 +3,15 @@ Schema = mongoose.Schema;
 
 const userSchema = new Schema({
     user_id: {
-        type: Number,
+        type: Schema.Types.ObjectId,
         required: true,
         unique: true,
+        default: mongoose.Types.ObjectId // Generate a new ObjectId by default
     },
     userName: {
         type: String,
         required: true,
-        index: { unique: true }
+        index: { unique: true } // Create an index for faster lookup and enforce uniqueness
     },
     email: {
         type: String,
@@ -22,14 +23,15 @@ const userSchema = new Schema({
         required: true,
     },
     address: { 
-        type : Array , "default" : [] 
+        type : Array, 
+        default: [] // Set a default empty array for the address field
     },
     phoneNumber: {
         type: Number,
         required: true,
     },
     profilePic: {
-        type: Blob,
+        type: Buffer, // Store binary data, such as an image, in the profilePic field
     },
     profileType: {
         type: String,
@@ -38,4 +40,5 @@ const userSchema = new Schema({
 
 });
 
+// Create a model named 'user' using the user schema
 module.exports = mongoose.model('user', userSchema);
