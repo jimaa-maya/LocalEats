@@ -3,8 +3,8 @@ const mongoose = require('mongoose');
 const cartSchema = new mongoose.Schema(
     {
         cart_id: {
-            type: mongoose.shcema.Types.ObjectId,
-            required: mongoose.Types.ObjectId,
+            type: mongoose.Schema.Types.ObjectId,
+            default: mongoose.Types.ObjectId,
             unique: true,
         },
         user_id: {
