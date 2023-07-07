@@ -3,8 +3,8 @@ const mongoose = require('mongoose');
 const cartSchema = new mongoose.Schema(
     {
         cart_id: {
-            type: String,
-            required: true,
+            type: mongoose.shcema.Types.ObjectId,
+            required: mongoose.Types.ObjectId,
             unique: true,
         },
         user_id: {
@@ -32,4 +32,4 @@ const cartSchema = new mongoose.Schema(
     }
 );
 
-module.exports = mongoose.model('cart', cartSchema);
+module.exports = mongoose.model('Cart', cartSchema);
