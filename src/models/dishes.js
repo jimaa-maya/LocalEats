@@ -11,7 +11,6 @@ const dishesSchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     equired: true,
     unique: true,
-    default: mongoose.Types.ObjectId,
     ref: 'Users',
   },
   dishName: {
