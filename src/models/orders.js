@@ -20,7 +20,7 @@ const ordersSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
-  onanimationendrderStatus: {
+  orderStatus: {
     type: String,
     required: true
   },
