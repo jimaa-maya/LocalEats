@@ -1,6 +1,46 @@
 const mongoose = require("mongoose");
 Schema = mongoose.Schema;
 
+const addressSchema = new Schema({
+    address_id: {
+        type: Schema.Types.ObjectId,
+        required: true,
+        unique: true,
+        default: mongoose.Types.ObjectId // Generate a new ObjectId by default
+    },
+    user_id: {
+        type: Schema.Types.ObjectId,
+        required: true,
+        ref: 'user', //refrencing the address to the user. 
+    },
+    buildingNo: { //building or house number.
+        type: Number,
+        required: true,
+    },
+    apartmentNo: { //Not required since might be a house (no apartment number). 
+        type: Number, 
+    },
+    street: {
+        type: String,
+        required: true,
+    },
+    city: {
+        type: String,
+        required: true,
+    },
+    province: {
+        type: String,
+        required: true,
+    },
+    country: {
+        type: String,
+        required: true,
+    }
+},  {
+        timestamps: true,
+});
+
+
 const userSchema = new Schema({
     user_id: {
         type: Schema.Types.ObjectId,
@@ -23,8 +63,8 @@ const userSchema = new Schema({
         required: true,
     },
     address: { 
-        type : Array, 
-        default: [] // Set a default empty array for the address field
+        type: addressSchema, // Use the addressSchema as the type for the address field
+        required: true,
     },
     phoneNumber: {
         type: Number,
@@ -37,8 +77,9 @@ const userSchema = new Schema({
         type: String,
         required: true,
     },
-
+},  {
+    timestamps: true,
 });
 
 // Create a model named 'user' using the user schema
-module.exports = mongoose.model('user', userSchema);
+module.exports = mongoose.model('User', userSchema);
