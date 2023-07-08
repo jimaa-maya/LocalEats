@@ -9,7 +9,7 @@ const cartSchema = new mongoose.Schema(
         },
         user_id: {
             type: mongoose.Schema.Types.ObjectId,
-            required: true,
+            required: false,
             ref: 'User',
         },
         dish_id: {
@@ -33,3 +33,13 @@ const cartSchema = new mongoose.Schema(
 );
 
 module.exports = mongoose.model('Cart', cartSchema);
+
+
+const cart = await Cart.findOne({
+    user_id: null,
+});
+
+if (cart) {
+    cart.user_id = user.id;
+    cart.save();
+}
