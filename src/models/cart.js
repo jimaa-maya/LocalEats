@@ -35,11 +35,11 @@ const cartSchema = new mongoose.Schema(
 module.exports = mongoose.model('Cart', cartSchema);
 
 
-const cart = await Cart.findOne({
+/*const cart = await Cart.findOne({
     user_id: null,
 });
 
 if (cart) {
     cart.user_id = user.id;
     cart.save();
-}
+} */
