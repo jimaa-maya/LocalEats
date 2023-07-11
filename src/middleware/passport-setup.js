@@ -11,17 +11,23 @@ passport.use(
       callbackURL: 'http://localhost:3000/api/auth/google/callback',
     },
     async function (accessToken, refreshToken, profile, done) {
-      const user = {
-        name: profile.displayName,
-        email: profile.emails[0].value,
-        providerId: profile.id,
-        avatar: profile.photos[0].value,
-      };
-      console.log('userrrrr', typeof user.providerId);
-      
-      
-        done(null, user);
-      
+      let currentUser = await User.findOne({user_id: profile._json.sub});
+      //console.log('profile ',profile);
+      try{
+        if(!currentUser){
+          const newUser = await User.create({
+            user_id: profile._json.sub,
+            userName: profile._json.name,
+            email: profile._json.email,
+            profilePic: profile.photos[0].value,
+            provider: 'google'
+          });
+          currentUser = newUser;
+          }
+      }catch(err){
+        console.log('error',err);
+      }
+        done(null, currentUser); 
     }
   )
 );
