@@ -111,6 +111,13 @@ userSchema.pre(save, function (next) {
     } 
   });
 
+  //Hashed Password Verification
+  UserSchema.methods.comparePassword = function(candidatePassword, cb) {
+    bcrypt.compare(candidatePassword, this.password, function(err, isMatch) {
+        if (err) return cb(err);
+        cb(null, isMatch);
+    });
+};
 
 // Create a model named 'user' using the user schema
 module.exports = mongoose.model('User', userSchema);
