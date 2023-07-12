@@ -1,11 +1,6 @@
 const mongoose = require('mongoose');
 
 const cartSchema = new mongoose.Schema(
-  {
-    cart_id: {
-      type: mongoose.Schema.Types.ObjectId,
-      default: mongoose.Types.ObjectId,
-      unique: true,
     },
     user_id: {
       type: mongoose.Schema.Types.ObjectId,
@@ -33,3 +28,13 @@ const cartSchema = new mongoose.Schema(
 );
 
 module.exports = mongoose.model('Cart', cartSchema);
+
+
+/*const cart = await Cart.findOne({
+    user_id: null,
+});
+
+if (cart) {
+    cart.user_id = user.id;
+    cart.save();
+} */
