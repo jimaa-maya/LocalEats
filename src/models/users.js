@@ -77,6 +77,14 @@ const userSchema = new Schema({
         type: String,
         required: true,
     },
+    preferences: {
+        type: [String],
+        default: [],
+    },
+    preferences: {
+        type: [String],
+        default: [],
+      },
 },  {
     timestamps: true,
 });
