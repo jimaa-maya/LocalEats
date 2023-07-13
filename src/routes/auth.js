@@ -41,51 +41,6 @@ routes.get(
 
 // add the role for the user i.e cook or student
 
-routes.post('/addrole', async (req, res) => {
-  const token = req.cookies.jwt;
-  const role = req.query.role;
-  if(!token){
-    return res.status(401).json({message: "Unauthorized!"})
-  }
-  try {
-    const deckodedToken = jwt.verify(token, process.env.SECRET_KEY);
-    const user = await User.findOneAndUpdate(
-      { email: deckodedToken.email },
-      { role: role },
-      { new: true }
-    );
-    res.status(201).json( user );
-  } catch (err) {
-    console.log(err);
-  }
-});
 
-// get the role of the user
-/****************** */
-
-// set the address for the user
-
-routes.post('/address', async (req,res) =>{
-  const token = req.cookies.jwt;
-  const {apartmentNo,city,country} = req.body;
-  const address = {apartmentNo,city,country};
-  if(!token){
-    return res.status(401).json({message: 'Unauthorized!'})
-  }
-  try{
-    const deckodedToken = jwt.verify(token,process.env.SECRET_KEY);
-    const user = await User.findOneAndUpdate(
-      { email: deckodedToken.email },
-      { address: address },
-      { new: true }
-    );
-    res.status(201).json( user );
-  }catch(err){
-    console.log(err)
-  }
-})
-
-// get the address for the user
-/**************/
 
 module.exports = routes;
