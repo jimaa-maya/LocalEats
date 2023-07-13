@@ -31,5 +31,9 @@ const dishesSchema = mongoose.Schema({
     type: [String],
     default: [],
   },
+  dishType: {
+    type: [String],
+    required: true,
+  },
 });
 module.exports = mongoose.model('Dishes', dishesSchema);
