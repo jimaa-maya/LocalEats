@@ -2,12 +2,13 @@ const bcrypt = require('bcrypt');
 const User = require('../models/users');
 const jwt = require('jsonwebtoken');
 
+
 const signUp = async (req, res) => {
     try {
-        const { userName, password } = req.body;
+        const { userName, email, password, address, phoneNumber, profileType } = req.body;
 
-        if (!userName || !password) {
-            return res.status(400).json({ message: 'Username and password are required' });
+        if (!userName || !email || !password || !address || !phoneNumber || !profileType) {
+            return res.status(400).json({ message: 'All required fields must be provided' });
         }
 
         // Check if user already exists in the database
@@ -16,18 +17,14 @@ const signUp = async (req, res) => {
             return res.status(409).json({ message: 'Username already exists' });
         }
 
-        // Generate salt
-        const salt = await bcrypt.genSalt(10);
+        // Generate a new user instance
+        const newUser = new User({ userName, email, password, address, phoneNumber, profileType });
 
-        // Hash the password with the generated salt
-        const hashedPassword = await bcrypt.hash(password, salt);
-
-        // Create a new user document and save it to the database
-        const newUser = new User({ userName, password: hashedPassword, salt });
+        // Save the user to trigger the pre-save middleware for password hashing
         await newUser.save();
 
         // Generate JWT token
-        const token = jwt.sign({ userId: newUser._id }, process.env.JWT_SECRET);
+        const token = jwt.sign({ userId: newUser.user_id }, process.env.JWT_SECRET);
 
         // Set the token as a cookie or include it in the response body
         res.cookie('token', token, {
@@ -45,26 +42,26 @@ const signUp = async (req, res) => {
 
 const signIn = async (req, res) => {
     try {
-        const { userName, password, role } = req.body;
+        const { userName, password } = req.body;
 
-        if (!userName || !password || !role) {
-            return res.status(400).json({ message: 'Username, password, and role are required' });
+        if (!userName || !password) {
+            return res.status(400).json({ message: 'Username and password are required' });
         }
 
-        // Find the user in the database 
-        const user = await User.findOne({ userName, role });
+        // Find the user in the database
+        const user = await User.findOne({ userName });
         if (!user) {
-            return res.status(401).json({ message: 'Invalid username, role, or password' });
+            return res.status(401).json({ message: 'Invalid username or password' });
         }
 
         // Compare the provided password with the hashed password stored in the database
         const passwordMatch = await bcrypt.compare(password, user.password);
         if (!passwordMatch) {
-            return res.status(401).json({ message: 'Invalid username, role, or password' });
+            return res.status(401).json({ message: 'Invalid username or password' });
         }
 
         // Generate JWT token
-        const token = jwt.sign({ userId: user._id, role: user.role }, process.env.JWT_SECRET);
+        const token = jwt.sign({ userId: user.user_id }, process.env.JWT_SECRET);
 
         // Set the token as a cookie or include it in the response body, if desired
         res.cookie('token', token, {
@@ -79,6 +76,7 @@ const signIn = async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 };
+
 
 const signOut = (req, res) => {
     try {
