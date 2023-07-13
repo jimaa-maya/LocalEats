@@ -1,17 +1,15 @@
 const express = require('express');
 const router = express.Router();
-const checkAuth = require('../middleware/checkAuth');
+const authenticate = require('../middleware/checkAuth');
 const { signUp, signIn, signOut, resetPassword } = require('../controllers/authController');
 
 
 
 router.post('/signup', signUp);
 router.post('/signin', signIn);
-router.get('/signout', checkAuth, signOut);
-router.post('/reset-password', checkAuth, resetPassword);
+router.get('/signout', authenticate, signOut);
+router.post('/reset-password', authenticate, resetPassword);
 
 
 
 module.exports = router;
-
-

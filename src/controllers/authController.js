@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const User = require('../models/users');
 const jwt = require('jsonwebtoken');
+const generateToken = require('../middleware/checkAuth');
 
 
 const signUp = async (req, res) => {
@@ -23,15 +24,8 @@ const signUp = async (req, res) => {
         // Save the user to trigger the pre-save middleware for password hashing
         await newUser.save();
 
-        // Generate JWT token
-        const token = jwt.sign({ userId: newUser.user_id }, process.env.JWT_SECRET);
-
-        // Set the token as a cookie or include it in the response body
-        res.cookie('token', token, {
-            httpOnly: true,
-            maxAge: 3600000,
-            secure: true,
-        });
+        // Generate and set the JWT token
+        generateToken(res, newUser);
 
         res.json({ message: 'Sign-up successful', token });
     } catch (error) {
@@ -78,20 +72,13 @@ const signIn = async (req, res) => {
 };
 
 
+
 const signOut = (req, res) => {
     try {
         // Clear session data, invalidate tokens, or perform any necessary sign-out actions
         req.session.destroy(); // Clear the session data for JWT-based authentication
 
-        // Additional sign-out actions for Google authentication
-        if (req.user && req.user.authMethod === 'google') {
-            // Perform Google sign-out actions, such as revoking tokens, etc.
-            // ...
-        }
-
-        res.json({ message: 'Sign-out successful' });
-        // Redirect the user to a specific route after sign-out
-        res.redirect('/');
+        res.redirect('./');
     } catch (error) {
         console.error('Error in signOut controller:', error);
         res.status(500).json({ message: 'Internal server error' });
