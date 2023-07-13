@@ -1004,6 +1004,7 @@ brace-expansion@^1.1.7:
     balanced-match "^1.0.0"
     concat-map "0.0.1"
 
+<<<<<<< HEAD
 brace-expansion@^2.0.1:
   version "2.0.1"
   resolved "https://registry.npmjs.org/brace-expansion/-/brace-expansion-2.0.1.tgz"
@@ -1011,6 +1012,8 @@ brace-expansion@^2.0.1:
   dependencies:
     balanced-match "^1.0.0"
 
+=======
+>>>>>>> c331318b9ef37b1c0413bfcd263f2c6531ed8a0c
 braces@^3.0.1, braces@~3.0.2:
   version "3.0.2"
   resolved "https://registry.npmjs.org/braces/-/braces-3.0.2.tgz"
@@ -1105,6 +1108,18 @@ caniuse-lite@^1.0.30001286:
 chalk@^2.0.0:
   version "2.4.2"
   resolved "https://registry.npmjs.org/chalk/-/chalk-2.4.2.tgz"
+<<<<<<< HEAD
+=======
+  integrity sha512-Mti+f9lpJNcwF4tWV8/OrTTtF1gZi+f8FqlyAdouralcFWFQWF2+NgCHShjkCb+IFBLq9buZwE1xckQU4peSuQ==
+  dependencies:
+    ansi-styles "^3.2.1"
+    escape-string-regexp "^1.0.5"
+    supports-color "^5.3.0"
+
+chalk@^2.1.0:
+  version "2.4.2"
+  resolved "https://registry.npmjs.org/chalk/-/chalk-2.4.2.tgz"
+>>>>>>> c331318b9ef37b1c0413bfcd263f2c6531ed8a0c
   integrity sha512-Mti+f9lpJNcwF4tWV8/OrTTtF1gZi+f8FqlyAdouralcFWFQWF2+NgCHShjkCb+IFBLq9buZwE1xckQU4peSuQ==
   dependencies:
     ansi-styles "^3.2.1"
@@ -1537,6 +1552,7 @@ ee-first@1.1.1:
   resolved "https://registry.npmjs.org/ee-first/-/ee-first-1.1.1.tgz"
   integrity sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0= sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==
 
+<<<<<<< HEAD
 ejs@^3.1.9:
   version "3.1.9"
   resolved "https://registry.npmjs.org/ejs/-/ejs-3.1.9.tgz"
@@ -1544,6 +1560,8 @@ ejs@^3.1.9:
   dependencies:
     jake "^10.8.5"
 
+=======
+>>>>>>> c331318b9ef37b1c0413bfcd263f2c6531ed8a0c
 electron-to-chromium@^1.4.17:
   version "1.4.51"
   resolved "https://registry.npmjs.org/electron-to-chromium/-/electron-to-chromium-1.4.51.tgz"
@@ -2843,6 +2861,7 @@ istanbul-reports@^3.1.3:
     html-escaper "^2.0.0"
     istanbul-lib-report "^3.0.0"
 
+<<<<<<< HEAD
 jake@^10.8.5:
   version "10.8.7"
   resolved "https://registry.npmjs.org/jake/-/jake-10.8.7.tgz"
@@ -2858,6 +2877,13 @@ jest-changed-files@^27.4.2:
   resolved "https://registry.npmjs.org/jest-changed-files/-/jest-changed-files-27.4.2.tgz"
   integrity sha512-/9x8MjekuzUQoPjDHbBiXbNEBauhrPU2ct7m8TfCg69ywt1y/N+yYwGh3gCpnqUS3klYWDU/lSNgv+JhoD2k1A==
   dependencies:
+=======
+jest-changed-files@^27.4.2:
+  version "27.4.2"
+  resolved "https://registry.npmjs.org/jest-changed-files/-/jest-changed-files-27.4.2.tgz"
+  integrity sha512-/9x8MjekuzUQoPjDHbBiXbNEBauhrPU2ct7m8TfCg69ywt1y/N+yYwGh3gCpnqUS3klYWDU/lSNgv+JhoD2k1A==
+  dependencies:
+>>>>>>> c331318b9ef37b1c0413bfcd263f2c6531ed8a0c
     "@jest/types" "^27.4.2"
     execa "^5.0.0"
     throat "^6.0.1"
@@ -3611,6 +3637,7 @@ minimatch@^3.0.4:
   version "3.0.4"
   resolved "https://registry.npmjs.org/minimatch/-/minimatch-3.0.4.tgz"
   integrity sha512-yJHVQEhyqPLUTgt9B83PXu6W3rx4MvvHvSUvToogpwoGDOUQ+yDrR0HRot+yOCdCO7u4hX3pWft6kWBBcqh0UA==
+<<<<<<< HEAD
   dependencies:
     brace-expansion "^1.1.7"
 
@@ -3628,6 +3655,11 @@ minimatch@^5.0.1:
   dependencies:
     brace-expansion "^2.0.1"
 
+=======
+  dependencies:
+    brace-expansion "^1.1.7"
+
+>>>>>>> c331318b9ef37b1c0413bfcd263f2c6531ed8a0c
 minimist@^1.2.0, minimist@^1.2.5:
   version "1.2.5"
   resolved "https://registry.npmjs.org/minimist/-/minimist-1.2.5.tgz"
@@ -3773,11 +3805,14 @@ nwsapi@^2.2.0:
   version "2.2.0"
   resolved "https://registry.npmjs.org/nwsapi/-/nwsapi-2.2.0.tgz"
   integrity sha512-h2AatdwYH+JHiZpv7pt/gSX1XoRGb7L/qSIeuqA6GwYoF9w1vP1cw42TO0aI2pNyshRK5893hNSl+1//vHK7hQ==
+<<<<<<< HEAD
 
 oauth@0.9.x:
   version "0.9.15"
   resolved "https://registry.npmjs.org/oauth/-/oauth-0.9.15.tgz"
   integrity sha512-a5ERWK1kh38ExDEfoO6qUHJb32rd7aYmPHuyCu3Fta/cnICvYmgd2uhuKXvPD+PXB+gCEYYEaQdIRAjCOwAKNA==
+=======
+>>>>>>> c331318b9ef37b1c0413bfcd263f2c6531ed8a0c
 
 object-assign@^4.1.1:
   version "4.1.1"
@@ -3978,6 +4013,7 @@ parseurl@~1.3.3:
   resolved "https://registry.npmjs.org/parseurl/-/parseurl-1.3.3.tgz"
   integrity sha512-CiyeOxFT/JZyN5m0z9PfXw4SCBJ6Sygz1Dpl0wqjlhDEGGBP1GnsUVEL0p63hoG1fcj3fHynXi9NYO4nWOL+qQ==
 
+<<<<<<< HEAD
 passport-facebook@^3.0.0:
   version "3.0.0"
   resolved "https://registry.npmjs.org/passport-facebook/-/passport-facebook-3.0.0.tgz"
@@ -4024,6 +4060,8 @@ passport@^0.6.0:
     pause "0.0.1"
     utils-merge "^1.0.1"
 
+=======
+>>>>>>> c331318b9ef37b1c0413bfcd263f2c6531ed8a0c
 path-exists@^3.0.0:
   version "3.0.0"
   resolved "https://registry.npmjs.org/path-exists/-/path-exists-3.0.0.tgz"
@@ -4058,11 +4096,14 @@ path-to-regexp@0.1.7:
   version "0.1.7"
   resolved "https://registry.npmjs.org/path-to-regexp/-/path-to-regexp-0.1.7.tgz"
   integrity sha1-32BBeABfUi8V60SQ5yR6G/qmf4w= sha512-5DFkuoqlv1uYQKxy8omFBeJPQcdoE07Kv2sferDCrAq1ohOU+MSDswDIbnx3YAM60qIOnYa53wBhXW0EbMonrQ==
+<<<<<<< HEAD
 
 pause@0.0.1:
   version "0.0.1"
   resolved "https://registry.npmjs.org/pause/-/pause-0.0.1.tgz"
   integrity sha512-KG8UEiEVkR3wGEb4m5yZkVCzigAD+cVEJck2CzYZO37ZGJfctvVptVO192MwrtPhzONn6go8ylnOdMhKqi4nfg==
+=======
+>>>>>>> c331318b9ef37b1c0413bfcd263f2c6531ed8a0c
 
 picocolors@^1.0.0:
   version "1.0.0"
@@ -5003,11 +5044,14 @@ typedarray-to-buffer@^3.1.5:
   dependencies:
     is-typedarray "^1.0.0"
 
+<<<<<<< HEAD
 uid2@0.0.x:
   version "0.0.4"
   resolved "https://registry.npmjs.org/uid2/-/uid2-0.0.4.tgz"
   integrity sha512-IevTus0SbGwQzYh3+fRsAMTVVPOoIVufzacXcHPmdlle1jUpq7BRL+mw3dgeLanvGZdwwbWhRV6XrcFNdBmjWA==
 
+=======
+>>>>>>> c331318b9ef37b1c0413bfcd263f2c6531ed8a0c
 unbox-primitive@^1.0.1:
   version "1.0.1"
   resolved "https://registry.npmjs.org/unbox-primitive/-/unbox-primitive-1.0.1.tgz"
