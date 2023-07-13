@@ -3,35 +3,11 @@ Schema = mongoose.Schema;
 
 const addressSchema = new Schema(
   {
-    address_id: {
-      type: Schema.Types.ObjectId,
-      required: true,
-      unique: true,
-      //default: mongoose.Types.ObjectId // Generate a new ObjectId by default
-    },
-    user_id: {
-      type: Schema.Types.ObjectId,
-      required: true,
-      ref: 'user', //refrencing the address to the user.
-    },
-    buildingNo: {
-      //building or house number.
-      type: Number,
-      required: true,
-    },
     apartmentNo: {
       //Not required since might be a house (no apartment number).
       type: Number,
     },
-    street: {
-      type: String,
-      required: true,
-    },
     city: {
-      type: String,
-      required: true,
-    },
-    province: {
       type: String,
       required: true,
     },
@@ -39,9 +15,6 @@ const addressSchema = new Schema(
       type: String,
       required: true,
     },
-  },
-  {
-    timestamps: true,
   }
 );
 
