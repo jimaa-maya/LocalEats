@@ -78,8 +78,9 @@ const userSchema = new Schema(
     profilePic: {
       type: Buffer, // Store binary data, such as an image, in the profilePic field
     },
-    profileType: {
+    role: {
       type: String,
+      default: ''
     },
   },
   {
