@@ -1,5 +1,6 @@
+require('dotenv').config();
 const jwt = require('jsonwebtoken');
-
+const express = require('express');
 const generateToken = (res, user) => {
   // eslint-disable-next-line camelcase
   const { user_id, userName, email } = user;
@@ -9,7 +10,7 @@ const generateToken = (res, user) => {
     userName,
     email,
   };
-  const token = jwt.sign(payload, process.env.JWT_SECRET, {
+  const token = jwt.sign(payload, process.env.SECRET_KEY, {
     expiresIn: '14d',
   });
   res.cookie('token', token, {
@@ -22,16 +23,16 @@ const generateToken = (res, user) => {
 // eslint-disable-next-line consistent-return
 const authenticate = (req, res, next) => {
   // Get the token from the request, typically from the "Authorization" header
-  const token = req.cookies.jwt;
-
+  const token = req.query.access_token;
+  console.log(token);
   // Check if a token is present
   if (!token) {
-    return res.status(401).json({ error: 'Unauthorized' });
+    return res.status(401).json({ error: 'token Unauthorized' });
   }
 
   try {
     // Verify the token using the secret key
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, process.env.SECRET_KEY);
 
     // Attach the decoded token to the request object
     req.user = decoded;
@@ -40,7 +41,7 @@ const authenticate = (req, res, next) => {
     next();
   } catch (error) {
     // Handle token verification error
-    return res.status(401).json({ error: 'Invalid token' });
+    return res.status(401).json({ error: 'token Invalid token' });
   }
 };
 

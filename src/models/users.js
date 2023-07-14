@@ -1,22 +1,28 @@
 const mongoose = require('mongoose');
 Schema = mongoose.Schema;
 
-const addressSchema = new Schema(
-  {
-    apartmentNo: {
-      //Not required since might be a house (no apartment number).
-      type: Number,
-    },
-    city: {
-      type: String,
-      required: true,
-    },
-    country: {
-      type: String,
-      required: true,
-    },
-  }
-);
+const addressSchema = new Schema({
+  apartmentNo: {
+    //Not required since might be a house (no apartment number).
+    type: Number,
+  },
+  streetNo: {
+    type: Number,
+  },
+  buildingNo: {
+    //building or house number.
+    type: Number,
+    required: true,
+  },
+  city: {
+    type: String,
+    required: true,
+  },
+  country: {
+    type: String,
+    required: true,
+  },
+});
 
 const userSchema = new Schema(
   {
@@ -53,7 +59,7 @@ const userSchema = new Schema(
     },
     role: {
       type: String,
-      default: ''
+      default: '',
     },
   },
   {

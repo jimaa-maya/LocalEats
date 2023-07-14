@@ -5,8 +5,8 @@ const checkAuth = require('../middleware/checkAuth');
 
 routes.get('/alldishes',getAllDishes);
 routes.get('/:dishid',getDish);
-routes.put('/:dishid',checkAuth,putDish);
-routes.delete('/:dishid',checkAuth,deleteDish);
+routes.put('/:dishid',checkAuth.authenticate,putDish);
+routes.delete('/:dishid',checkAuth.authenticate,deleteDish);
 
 
 module.exports = routes;
