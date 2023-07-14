@@ -88,7 +88,7 @@ const userSchema = new Schema({
 =========================*/
 
 //Run this before any user document is saved or changed
-userSchema.pre(save, function (next) { 
+userSchema.pre('save', function (next) { 
     const user = this
   
     //Check whether or not the password is new and needs to be hashed
@@ -112,7 +112,7 @@ userSchema.pre(save, function (next) {
   });
 
   //Hashed Password Verification
-  UserSchema.methods.comparePassword = function(candidatePassword, cb) {
+  userSchema.methods.comparePassword = function(candidatePassword, cb) {
     bcrypt.compare(candidatePassword, this.password, function(err, isMatch) {
         if (err) return cb(err);
         cb(null, isMatch);
