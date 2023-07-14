@@ -23,7 +23,7 @@ const generateToken = (res, user) => {
 // eslint-disable-next-line consistent-return
 const authenticate = (req, res, next) => {
   // Get the token from the request, typically from the "Authorization" header
-  const token = req.query.access_token;
+  const token = req.cookies.jwt;
   console.log(token);
   // Check if a token is present
   if (!token) {
