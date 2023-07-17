@@ -7,7 +7,7 @@ const app = express();
 const port = 3000;
 
 
-app.use('/Auth', authRoutes);
+
 app.use(cookieParser());
 
 app.listen(port, () => {

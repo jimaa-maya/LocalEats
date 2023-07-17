@@ -6,33 +6,47 @@ const generateToken = require('../middleware/checkAuth');
 
 const signUp = async (req, res) => {
     try {
-        const { userName, email, password, address, phoneNumber, profileType } = req.body;
-
-        if (!userName || !email || !password || !address || !phoneNumber || !profileType) {
-            return res.status(400).json({ message: 'All required fields must be provided' });
-        }
-
-        // Check if user already exists in the database
-        const existingUser = await User.findOne({ userName });
-        if (existingUser) {
-            return res.status(409).json({ message: 'Username already exists' });
-        }
-
-        // Generate a new user instance
-        const newUser = new User({ userName, email, password, address, phoneNumber, profileType });
-
-        // Save the user to trigger the pre-save middleware for password hashing
-        await newUser.save();
-
-        // Generate and set the JWT token
-        generateToken(res, newUser);
-
-        res.json({ message: 'Sign-up successful', token });
+      const { userName, email, password, address, phoneNumber, role } = req.body;
+  
+      if (!userName || !email || !password || !role) {
+        return res.status(400).json({ message: 'All required fields must be provided' });
+      }
+  
+      // Check if user already exists in the database
+      const existingUser = await User.findOne({ userName });
+      if (existingUser) {
+        return res.status(409).json({ message: 'Username already exists' });
+      }
+  
+      // Generate a salt
+      const salt = await bcrypt.genSalt(10);
+  
+      // Hash the password with the generated salt
+      const hashedPassword = await bcrypt.hash(password, salt);
+  
+      // Create a new user instance with the hashed password
+      const newUser = new User({
+        userName,
+        email,
+        password: hashedPassword,
+        address,
+        phoneNumber,
+        profileType,
+      });
+  
+      // Save the user to the database
+      await newUser.save();
+  
+      // Generate and set the JWT token
+      generateToken(res, newUser);
+  
+      res.json({ message: 'Sign-up successful', token });
     } catch (error) {
-        console.error('Error in signUp controller:', error);
-        res.status(500).json({ message: 'Internal server error' });
+      console.error('Error in signUp controller:', error);
+      res.status(500).json({ message: 'Internal server error' });
     }
-};
+  };
+  
 
 const signIn = async (req, res) => {
     try {
@@ -54,15 +68,9 @@ const signIn = async (req, res) => {
             return res.status(401).json({ message: 'Invalid username or password' });
         }
 
-        // Generate JWT token
-        const token = jwt.sign({ userId: user.user_id }, process.env.JWT_SECRET);
 
-        // Set the token as a cookie or include it in the response body, if desired
-        res.cookie('token', token, {
-            httpOnly: true,
-            maxAge: 3600000, // Set the expiration time as desired
-            secure: true, // Set to true if using HTTPS
-        });
+        // Generate and set the JWT token
+        generateToken(res, newUser);
 
         res.json({ message: 'Sign-in successful', token });
     } catch (error) {
@@ -99,6 +107,9 @@ const resetPassword = async (req, res) => {
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
+
+         // Generate a salt
+    const salt = await bcrypt.genSalt(10);
 
         // Hash the new password
         const hashedPassword = await bcrypt.hash(newPassword, 10);
