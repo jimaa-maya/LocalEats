@@ -1,4 +1,5 @@
 const Dishes = require('../models/dishes');
+const User = require('../models/users');
 
 // To-do's:
 // get controllers: getAllDishes(public), get nearby dishes(private), filter dishes (public)
@@ -17,6 +18,28 @@ const getAllDishes = async (req, res) => {
     res.json(dishes);
   } catch (error) {
     res.status(422).json({ message: 'The dish name is required' });
+  }
+};
+
+// getting spesific dish by its id
+
+const getDishById = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const dish = await Dishes.findById(id);
+
+    if (!dish) {
+      return res
+        .status(404)
+        .json({ message: 'The dish you are looking for was not found' });
+    }
+
+    return res.json(dish);
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: 'An error occured while fetching the dish' });
   }
 };
 
@@ -52,25 +75,30 @@ const filterDishes = async (req, res) => {
   }
 };
 
-// getting spesific dish by its id
+// Searching nearby dishes
 
-const getDishById = async (req, res) => {
-  const { id } = req.params;
+const getDishesByLocation = async (req, res) => {
+  const { city, province, country } = req.query;
 
   try {
-    const dish = await Dishes.findById(id);
+    // find the users with matching location
 
-    if (!dish) {
-      return res
-        .status(404)
-        .json({ message: 'The dish you are looking for was not found' });
-    }
+    const users = await User.find({
+      'address.city': city,
+      'adress.province': province,
+    }).select('dish_id');
 
-    return res.json(dish);
+    // get the dish id's from matching users
+
+    const dishIds = users.map((user) => user.dish_id);
+
+    // fetch the dishes based on the dish id
+
+    const dishes = await Dishes.find({ dish_id: { $in: dishIds } });
+
+    res.json(dishes);
   } catch (error) {
-    return res
-      .status(500)
-      .json({ message: 'An error occured while fetching the dish' });
+    res.status(500).json({ message: 'Failed to fetch dishes by location.' });
   }
 };
 
@@ -127,38 +155,11 @@ const fetchDishImage = async (req, res) => {
   }
 };
 
-// Searching dishes
-
-const searchDishes = async (req, res) => {
-  const { query } = req.params;
-
-  try {
-    const dishes = await Dishes.find({
-      $or: [
-        { dishName: { $regex: query, $options: 'i' } }, // Case-insensitivity search for the name
-        { description: { $regex: query, $options: 'i' } }, // Case-insensitivity search for the descpription
-      ],
-    });
-
-    if (dishes.length === 0) {
-      return res
-        .status(404)
-        .json({ message: 'No dishes found matching the search query' });
-    }
-
-    return res.json(dishes);
-  } catch (error) {
-    return res
-      .status(500)
-      .json({ message: 'Internal server error. Please try again.' });
-  }
-};
-
 module.exports = {
   getAllDishes,
   filterDishes,
   getDishById,
   fetchAllDishImages,
   fetchDishImage,
-  searchDishes,
+  getDishesByLocation,
 };
