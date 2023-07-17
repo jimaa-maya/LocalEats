@@ -1,15 +1,6 @@
 const Dishes = require('../models/dishes');
 const User = require('../models/users');
 
-// To-do's:
-// get controllers: getAllDishes(public), get nearby dishes(private), filter dishes (public)
-// get spesific dish (public), fetch all dish images (public),
-// fetch dish image (public),search dishes.(public)
-
-// put controllers: (user:cook update dish image, user: cook update dish, update review based on its id
-// user: user but put spesific timeframe or limit the number of times a review can be modified.)
-
-// public get controllers
 // getting all dishes
 
 const getAllDishes = async (req, res) => {
@@ -155,6 +146,61 @@ const fetchDishImage = async (req, res) => {
   }
 };
 
+// remaning controllers: 
+// To do: create a new dish(post), update a dish by its dish id(put), remove a dish(delete), 
+// user:cook update dish image(put), update review based on its id (put)
+// user: user but put spesific timeframe or limit the number of times a review can be modified 
+
+
+// Creating a new dish (for dish owners (POST))
+
+const createDish = async (req, res) => {
+    const { dishName, description, price, dishType } = req.body;
+
+    try {
+      // Creating a new dish
+      const newDish = new Dishes({
+        dishName,
+        description,
+        price,
+        dishType,
+      });
+
+      // Saving the new dish to the database
+      const createdDish = await newDish.save();
+      return res.status(201).json(createdDish);
+
+    } catch (error) {
+      return res.status(500).json({ message: 'Failed to create a new dish'});
+    }
+};
+
+// Updating dish (for dish owners (PUT))
+
+const updateDish = async (req, res) => {
+  const { dishId } = req.params;
+  const { dishName, description, price, dishType } = req.body;
+
+  try {
+    const dish = await Dishes.findById(dishId);
+
+    if (!dish) {
+      return res.status(404).json({ message: 'Dish not found' });
+    }
+
+    // updating dish fields with the new values
+    dish.dishName = dishName;
+    dish.description = description;
+    dish.price = price;
+    dish.dishType = dishType;
+    await dish.save();
+
+    return res.status(200).json({ message: 'Dish updated successfully '});
+  } catch (error) {
+    return res.status(500).json({ message: 'Failed to update dish' });
+  }
+};
+
 module.exports = {
   getAllDishes,
   filterDishes,
@@ -162,4 +208,6 @@ module.exports = {
   fetchAllDishImages,
   fetchDishImage,
   getDishesByLocation,
+  createDish,
+  updateDish,
 };
