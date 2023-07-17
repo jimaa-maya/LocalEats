@@ -78,7 +78,7 @@ const filterDishes = async (req, res) => {
 // Searching nearby dishes
 
 const getDishesByLocation = async (req, res) => {
-  const { city, province, country } = req.query;
+  const { city, province } = req.query;
 
   try {
     // find the users with matching location
