@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
 const User = require('../models/users');
 const jwt = require('jsonwebtoken');
-const generateToken = require('../middleware/checkAuth');
+const generateToken = require('../middleware/checkAuth.js');
 
 
 const signUp = async (req, res) => {
