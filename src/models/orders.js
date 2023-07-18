@@ -24,11 +24,6 @@ const ordersSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  orderDate: {
-    type: Date,
-    default: Date.now,
-    required: true
-  },
   otherInfo: {
     type: String,
   }
@@ -38,6 +33,5 @@ const ordersSchema = new mongoose.Schema({
 }
 );
 
-module.exports = mongoose.model('orders', ordersSchema);
+module.exports = mongoose.model('Orders', ordersSchema);
 
- 

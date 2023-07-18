@@ -10,16 +10,25 @@
     "test": "yarn validate && jest --passWithNoTests",
     "lint": "eslint --ignore-path .gitignore .",
     "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|json)\"",
-    "validate": "yarn format && yarn lint",
     "validate-staged": "lint-staged",
     "postinstall": "husky install && husky add .husky/pre-commit \"yarn validate-staged\" && husky add .husky/pre-push \"yarn test\""
   },
   "dependencies": {
+    "cookie-parser": "^1.4.6",
     "dotenv": "^14.2.0",
+    "ejs": "^3.1.9",
     "express": "^4.17.2",
-    "yarn-upgrade-all": "^0.6.1",
+    "jsonwebtoken": "^9.0.1",
     "mongodb": "^5.0.17",
-    "mongoose": "^7.3.1"
+    "mongoose": "^7.3.1",
+<<<<<<< HEAD
+    "passport": "^0.6.0",
+    "passport-facebook": "^3.0.0",
+    "passport-google-oauth2": "^0.2.0",
+    "passport-google-oauth20": "^2.0.0",
+=======
+>>>>>>> c331318b9ef37b1c0413bfcd263f2c6531ed8a0c
+    "yarn-upgrade-all": "^0.6.1"
   },
   "devDependencies": {
     "eslint": "^8.7.0",
