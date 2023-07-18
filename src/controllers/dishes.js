@@ -1,5 +1,7 @@
 const Dishes = require('../models/dishes');
 const User = require('../models/users');
+const fs = require('fs');
+const path = require('path');
 
 // getting all dishes
 
@@ -147,7 +149,7 @@ const fetchDishImage = async (req, res) => {
 };
 
 // remaning controllers: 
-// To do: create a new dish(post), update a dish by its dish id(put), remove a dish(delete), 
+// To do: 
 // user:cook update dish image(put), update review based on its id (put)
 // user: user but put spesific timeframe or limit the number of times a review can be modified 
 
@@ -201,6 +203,31 @@ const updateDish = async (req, res) => {
   }
 };
 
+// removing a dish (dish owners allowed) (DELETE)
+
+const removeDish = async (req,res) => {
+  const { dishId } = req.params;
+
+  try {
+
+    //finding the dish and remove it
+
+    const removedDish = await Dishes.findByIdAndRemove(dishId);
+
+    if (!removedDish) {
+      return res.status(404).json({ message: 'Dish not found' });
+    }
+
+    return res.json(removedDish)
+  } catch (error) {
+    return res.status(500).json({ message: 'An error occured while removing the dish'});
+  }
+};
+
+
+
+
+
 module.exports = {
   getAllDishes,
   filterDishes,
@@ -210,4 +237,5 @@ module.exports = {
   getDishesByLocation,
   createDish,
   updateDish,
+  removeDish,
 };
