@@ -149,22 +149,29 @@ const fetchDishImage = async (req, res) => {
   }
 };
 
-// remaning controllers: 
-// To do: 
-// user:cook update dish image(put), update review based on its id (put)
-// user: user but put spesific timeframe or limit the number of times a review can be modified 
-
+// remaning controllers:
+// To do:
+// user: update review based on its id (put)
+// user: user but put spesific timeframe or limit the number of times a review can be modified
 
 // Creating a new dish (for dish owners (POST))
 
 const createDish = async (req, res) => {
   try {
-    // handling file upload
-    upload.single('image')(req, res, async function (err) {  // 'image' should match the name attribute of the file input field in the form
+    // handling image upload
+    upload.single('image')(req, res, async function (err) {
+      // 'image' should match the name attribute of the file input field in the form
       if (err instanceof multer.MulterError) {
-        return res.status(400).json({ error: 'Error uploading the file. Please check the file format and size.' });
+        return res
+          .status(400)
+          .json({
+            error:
+              'Error uploading the file. Please check the file format and size.',
+          });
       } else if (err) {
-        return res.status(500).json({ error: 'An error occurred during image upload' });
+        return res
+          .status(500)
+          .json({ error: 'An error occurred during image upload' });
       }
 
       // if there is no errors; extract the necessary info from the req.body:
@@ -185,7 +192,9 @@ const createDish = async (req, res) => {
       return res.status(201).json({ message: 'Dish created successfully' });
     });
   } catch (error) {
-    return res.status(500).json({ error: 'An error occurred while creating the dish' });
+    return res
+      .status(500)
+      .json({ error: 'An error occurred while creating the dish' });
   }
 };
 
@@ -209,19 +218,50 @@ const updateDish = async (req, res) => {
     dish.dishType = dishType;
     await dish.save();
 
-    return res.status(200).json({ message: 'Dish updated successfully '});
+    return res.status(200).json({ message: 'Dish updated successfully ' });
   } catch (error) {
     return res.status(500).json({ message: 'Failed to update dish' });
   }
 };
 
+// updating Dish Image (cooks allowed only) (PUT)
+
+const updateDishImage = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const dish = await Dishes.findById(id);
+
+    if (!dish) {
+      return res.status(404).json({ message: 'Dish not found' });
+    }
+
+    // checking if a new image file was uploaded
+
+    if (!req.file) {
+      return res.status(400).json({ message: 'No image file provided.' });
+    }
+
+    // updating dish's image with the new file
+
+    dish.image_url = req.file.buffer;
+
+    // saving to the database
+    await dish.save();
+
+    return res.status(200).json({ message: 'Dish image updated succesfully.' });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ error: ' An error occured while updating the dish image ' });
+  }
+};
+
 // removing a dish (dish owners allowed) (DELETE)
 
-const removeDish = async (req,res) => {
+const removeDish = async (req, res) => {
   const { dishId } = req.params;
 
   try {
-
     //finding the dish and remove it
 
     const removedDish = await Dishes.findByIdAndRemove(dishId);
@@ -230,13 +270,37 @@ const removeDish = async (req,res) => {
       return res.status(404).json({ message: 'Dish not found' });
     }
 
-    return res.json(removedDish)
+    return res.json(removedDish);
   } catch (error) {
-    return res.status(500).json({ message: 'An error occured while removing the dish'});
+    return res
+      .status(500)
+      .json({ message: 'An error occured while removing the dish' });
   }
 };
 
+// Adding a dish review ( customer only) (POST)
 
+//To-do: Add time frame for reviews
+
+/*const addReview = async (req, res) => {
+  try {
+    const { dishId } = req.params;
+    const { review } = req.body;
+
+    const dish = await Dishes.findById(dishId);
+
+    if (!dish) {
+      return res.status(404).json({ message: 'Dish not found'});
+    }
+
+    dish.review.push(review);
+    await dish.save();
+
+    return res.status(200).json({ message: 'Review added successfully.'});
+  } catch (error) {
+    return res.status(500).json({ error: 'An error occured while adding review.' });
+  }
+};*/
 
 
 
@@ -249,5 +313,6 @@ module.exports = {
   getDishesByLocation,
   createDish,
   updateDish,
+  updateDishImage,
   removeDish,
 };
