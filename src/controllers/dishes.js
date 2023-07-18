@@ -2,6 +2,7 @@ const Dishes = require('../models/dishes');
 const User = require('../models/users');
 const fs = require('fs');
 const path = require('path');
+const multer = require('multer');
 
 // getting all dishes
 
@@ -157,24 +158,35 @@ const fetchDishImage = async (req, res) => {
 // Creating a new dish (for dish owners (POST))
 
 const createDish = async (req, res) => {
-    const { dishName, description, price, dishType } = req.body;
+  try {
+    // handling file upload
+    upload.single('image')(req, res, async function (err) {  // 'image' should match the name attribute of the file input field in the form
+      if (err instanceof multer.MulterError) {
+        return res.status(400).json({ error: 'Error uploading the file. Please check the file format and size.' });
+      } else if (err) {
+        return res.status(500).json({ error: 'An error occurred during image upload' });
+      }
 
-    try {
-      // Creating a new dish
-      const newDish = new Dishes({
+      // if there is no errors; extract the necessary info from the req.body:
+      const { dishName, description, price, dishType } = req.body;
+
+      //creating a new dish
+      const dish = new Dishes({
         dishName,
         description,
+        image_url: req.file.buffer,
         price,
         dishType,
       });
 
-      // Saving the new dish to the database
-      const createdDish = await newDish.save();
-      return res.status(201).json(createdDish);
+      //saving to the database
+      await dish.save();
 
-    } catch (error) {
-      return res.status(500).json({ message: 'Failed to create a new dish'});
-    }
+      return res.status(201).json({ message: 'Dish created successfully' });
+    });
+  } catch (error) {
+    return res.status(500).json({ error: 'An error occurred while creating the dish' });
+  }
 };
 
 // Updating dish (for dish owners (PUT))
