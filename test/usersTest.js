@@ -1,14 +1,14 @@
-var mongoose = require(mongoose),
+const mongoose = require(mongoose),
     User = require(./src/models/users);
 
-var connStr = mongodb:
+const connStr = mongodb;
 mongoose.connect(connStr, function(err) {
     if (err) throw err;
     console.log(Successfully connected to MongoDB);
 });
 
 // create a user a new user
-var testUser = new User({
+const testUser = new User({
     userName: Abdurrahman,
     password: Password99;
 });
