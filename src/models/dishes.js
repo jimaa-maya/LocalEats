@@ -31,6 +31,10 @@ const dishesSchema = mongoose.Schema({
     type: [String],
     default: [],
   },
+  dishType: {
+    type: [String],
+    required: true,
+  },
   preferences: {
     type: [String],
     default: [],
