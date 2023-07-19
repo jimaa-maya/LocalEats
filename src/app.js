@@ -30,4 +30,5 @@ app.use('/api', apiRoutes);
 app.get('/', (req, res) => {
   res.render('home');
 });
-module.exports = app;
+
+module.exports = { app, storage };

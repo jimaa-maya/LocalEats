@@ -1,39 +1,52 @@
 const mongoose = require('mongoose');
 
-const dishesSchema = mongoose.Schema({
-  dish_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    required: true,
-    unique: true,
-    default: mongoose.Types.ObjectId,
+const reviewSchema = mongoose.Schema(
+  {
+    content: {
+      type: String,
+      required: true,
+    },
   },
-  user_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    required: true,
-    unique: true,
-    ref: 'Users',
+  { _id: false, timestamps: true }
+);
+
+const dishesSchema = mongoose.Schema(
+  {
+    dish_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      unique: true,
+      default: mongoose.Types.ObjectId,
+    },
+    user_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      unique: true,
+      ref: 'Users',
+    },
+    dishName: {
+      type: String,
+      required: true,
+    },
+    description: {
+      type: String,
+    },
+    image_url: {
+      type: Buffer,
+    },
+    price: {
+      type: Number,
+      required: true,
+    },
+    review: {
+      type: [reviewSchema], // Array of review objs
+      default: [],
+    },
+    dishType: {
+      type: [String],
+      required: true,
+    },
   },
-  dishName: {
-    type: String,
-    required: true,
-  },
-  description: {
-    type: String,
-  },
-  image_url: {
-    type: Buffer,
-  },
-  price: {
-    type: Number,
-    required: true,
-  },
-  review: {
-    type: [String],
-    default: [],
-  },
-  dishType: {
-    type: [String],
-    required: true,
-  },
-});
+  { timestamps: true }
+);
 module.exports = mongoose.model('Dishes', dishesSchema);

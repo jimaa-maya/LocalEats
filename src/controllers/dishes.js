@@ -1,8 +1,7 @@
+const multer = require('multer');
 const Dishes = require('../models/dishes');
 const User = require('../models/users');
-const fs = require('fs');
-const path = require('path');
-const multer = require('multer');
+const { upload } = require('../app');
 
 // getting all dishes
 
@@ -156,19 +155,20 @@ const fetchDishImage = async (req, res) => {
 
 // Creating a new dish (for dish owners (POST))
 
+// eslint-disable-next-line consistent-return
 const createDish = async (req, res) => {
   try {
     // handling image upload
-    upload.single('image')(req, res, async function (err) {
+    upload.single('image')(req, res, async (err) => {
       // 'image' should match the name attribute of the file input field in the form
       if (err instanceof multer.MulterError) {
-        return res
-          .status(400)
-          .json({
-            error:
-              'Error uploading the file. Please check the file format and size.',
-          });
-      } else if (err) {
+        return res.status(400).json({
+          error:
+            'Error uploading the file. Please check the file format and size.',
+        });
+      }
+      // for non multer errors
+      if (err) {
         return res
           .status(500)
           .json({ error: 'An error occurred during image upload' });
@@ -177,7 +177,7 @@ const createDish = async (req, res) => {
       // if there is no errors; extract the necessary info from the req.body:
       const { dishName, description, price, dishType } = req.body;
 
-      //creating a new dish
+      // creating a new dish
       const dish = new Dishes({
         dishName,
         description,
@@ -186,7 +186,7 @@ const createDish = async (req, res) => {
         dishType,
       });
 
-      //saving to the database
+      // saving to the database
       await dish.save();
 
       return res.status(201).json({ message: 'Dish created successfully' });
@@ -262,7 +262,7 @@ const removeDish = async (req, res) => {
   const { dishId } = req.params;
 
   try {
-    //finding the dish and remove it
+    // finding the dish and remove it
 
     const removedDish = await Dishes.findByIdAndRemove(dishId);
 
@@ -280,29 +280,54 @@ const removeDish = async (req, res) => {
 
 // Adding a dish review ( customer only) (POST)
 
-//To-do: Add time frame for reviews
-
-/*const addReview = async (req, res) => {
+const addReview = async (req, res) => {
   try {
+    // taking dish id and review from req
     const { dishId } = req.params;
     const { review } = req.body;
 
+    // checking if dish exists
     const dish = await Dishes.findById(dishId);
 
     if (!dish) {
-      return res.status(404).json({ message: 'Dish not found'});
+      return res.status(404).json({ message: 'Dish not found' });
     }
 
-    dish.review.push(review);
+    // checking if the user has already added a review for this dish
+
+    const existingReview = dish.review.find((r) =>
+      r.user_id.equals(req.user_id)
+    );
+
+    if (existingReview) {
+      return res
+        .status(400)
+        .json({ message: 'You have already reviewed this dish.' });
+    }
+
+    // creating a new review
+
+    const newReview = {
+      content: review,
+    };
+
+    // adding the new review to the dish reviews array
+    dish.review.push(newReview);
+
     await dish.save();
 
-    return res.status(200).json({ message: 'Review added successfully.'});
+    return res.status(200).json({ message: 'Review added successfully' });
   } catch (error) {
-    return res.status(500).json({ error: 'An error occured while adding review.' });
+    return res
+      .status(500)
+      .json({ error: 'An error occured while adding review' });
   }
-};*/
+};
 
+// updating review
 
+// To-do: add updating rev controller, may be add rating as well. +Add time frame for reviews.
+// Search about where review and ratings controllers should be in? Dishes or order?
 
 module.exports = {
   getAllDishes,
@@ -315,4 +340,5 @@ module.exports = {
   updateDish,
   updateDishImage,
   removeDish,
+  addReview,
 };
