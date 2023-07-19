@@ -148,11 +148,6 @@ const fetchDishImage = async (req, res) => {
   }
 };
 
-// remaning controllers:
-// To do:
-// user: update review based on its id (put)
-// user: user but put spesific timeframe or limit the number of times a review can be modified
-
 // Creating a new dish (for dish owners (POST))
 
 // eslint-disable-next-line consistent-return
@@ -284,7 +279,7 @@ const addReview = async (req, res) => {
   try {
     // taking dish id and review from req
     const { dishId } = req.params;
-    const { review } = req.body;
+    const { review, rating } = req.body;
 
     // checking if dish exists
     const dish = await Dishes.findById(dishId);
@@ -308,11 +303,19 @@ const addReview = async (req, res) => {
     // creating a new review
 
     const newReview = {
+      user_id: req.user_id,
       content: review,
+      // eslint-disable-next-line object-shorthand
+      rating: rating, // provided rating included
     };
 
     // adding the new review to the dish reviews array
     dish.review.push(newReview);
+
+    // updating the overall rating for the dish
+    const totalRating = dish.rating * dish.review.length + rating;
+    const newRating = totalRating / (dish.review.length + 1);
+    dish.rating = newRating;
 
     await dish.save();
 
@@ -324,10 +327,61 @@ const addReview = async (req, res) => {
   }
 };
 
-// updating review
+// Updating Review of a Dish (customer only) (PUT)
 
-// To-do: add updating rev controller, may be add rating as well. +Add time frame for reviews.
-// Search about where review and ratings controllers should be in? Dishes or order?
+const updateReview = async (req, res) => {
+  const { dishId } = req.params;
+  const { review: updatedReview, rating: updatedRating } = req.body;
+
+  try {
+    // find the dish by ID
+    const dish = await Dishes.findById(dishId);
+
+    if (!dish) {
+      return res.status(404).json({ message: 'Dish not found' });
+    }
+
+    // check if the user has already added a review for this dish
+    const existingReview = dish.review.find((r) =>
+      r.user_id.equals(req.user_id)
+    );
+    if (!existingReview) {
+      return res
+        .status(400)
+        .json({ message: 'You have not reviewed this dish yet' });
+    }
+
+    // checking if the review update time frame is within a day (86400 seconds)
+    const timeDifference = Date.now() - existingReview.updatedAt.getTime();
+    const timeFrame = 86400 * 1000; // 1 day in milliseconds
+    if (timeDifference >= timeFrame) {
+      return res
+        .status(400)
+        .json({ message: 'Review update time frame has passed' });
+    }
+
+    // updating the review content and rating
+    existingReview.content = updatedReview;
+    existingReview.rating = updatedRating;
+
+    // Recalculate the overall dish rating based on the updated reviews
+    const totalRating = dish.review.reduce(
+      (sum, review) => sum + review.rating,
+      0
+    );
+    const newRating = (totalRating + updatedRating) / dish.review.length;
+
+    dish.rating = newRating;
+
+    await dish.save();
+
+    return res.status(200).json({ message: 'Review updated successfully' });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ error: 'An error occurred while updating review' });
+  }
+};
 
 module.exports = {
   getAllDishes,
@@ -341,4 +395,5 @@ module.exports = {
   updateDishImage,
   removeDish,
   addReview,
+  updateReview,
 };
