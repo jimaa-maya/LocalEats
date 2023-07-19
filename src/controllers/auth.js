@@ -1,7 +1,9 @@
+const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const User = require('../models/users');
-const jwt = require('jsonwebtoken');
-const generateToken = require('../middleware/checkAuth');
+const { generateToken } = require('../middleware/checkAuth');
+require('dotenv').config();
+
 
 const signUp = async (req, res) => {
   try {
@@ -66,7 +68,7 @@ const signUp = async (req, res) => {
       signed: true,
     });
 
-    res.json({ message: 'Sign-up successful', token });
+   return res.json({ message: 'Sign-up successful', token });
   } catch (error) {
     console.error('Error in signUp controller:', error);
     res.status(500).json({ message: 'Internal server error' });
@@ -75,33 +77,33 @@ const signUp = async (req, res) => {
 
 
 const signIn = async (req, res) => {
-    try {
-        const { userName, password } = req.body;
+  try {
+    const { userName, password } = req.body;
 
-        if (!userName || !password) {
-            return res.status(400).json({ message: 'Username and password are required' });
-        }
-
-        // Find the user in the database
-        const user = await User.findOne({ userName });
-        if (!user) {
-            return res.status(401).json({ message: 'Invalid username or password' });
-        }
-
-        // Compare the provided password with the hashed password stored in the database
-        const passwordMatch = await bcrypt.compare(password, user.password);
-        if (!passwordMatch) {
-            return res.status(401).json({ message: 'Invalid username or password' });
-        }
-
-
-        // Generate and set the JWT token
-        generateToken(res, user);
-        res.json({ message: 'Sign-in successful', token });
-    } catch (error) {
-        console.error('Error in signIn controller:', error);
-        res.status(500).json({ message: 'Internal server error' });
+    if (!userName || !password) {
+      return res.status(400).json({ message: 'Username and password are required' });
     }
+
+    // Find the user in the database
+    const user = await User.findOne({ userName });
+    if (!user) {
+      return res.status(401).json({ message: 'Invalid username or password' });
+    }
+
+    // Compare the provided password with the hashed password stored in the database
+    const passwordMatch = await bcrypt.compare(password, user.password);
+    if (!passwordMatch) {
+      return res.status(401).json({ message: 'Invalid username or password' });
+    }
+
+    // Generate and set the JWT token
+    generateToken(res, user); // Pass the user object to the generateToken function
+
+    res.json({ message: 'Sign-in successful' });
+  } catch (error) {
+    console.error('Error in signIn controller:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
 };
 
 

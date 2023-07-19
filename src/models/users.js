@@ -12,15 +12,15 @@ const addressSchema = new Schema({
   buildingNo: {
     //building or house number.
     type: Number,
-    required: true,
+    
   },
   city: {
     type: String,
-    required: true,
+    
   },
   country: {
     type: String,
-    required: true,
+    
   },
 });
 
@@ -28,7 +28,6 @@ const userSchema = new Schema(
   {
     user_id: {
       type: String, // Nezir changed the value for String because of i got casterror
-      required: true,
       unique: true,
       default: mongoose.Types.ObjectId, // Generate a new ObjectId by default
     },
