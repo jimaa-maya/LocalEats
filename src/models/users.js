@@ -29,7 +29,7 @@ const userSchema = new Schema(
     user_id: {
       type: String, // Nezir changed the value for String because of i got casterror
       unique: true,
-      default: mongoose.Types.ObjectId, // Generate a new ObjectId by default
+      //default: mongoose.Types.ObjectId, // Generate a new ObjectId by default
     },
     userName: {
       type: String,

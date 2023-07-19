@@ -113,7 +113,10 @@ const signOut = (req, res) => {
         // Clear session data, invalidate tokens, or perform any necessary sign-out actions
         req.session.destroy(); // Clear the session data for JWT-based authentication
 
-        res.redirect('/');
+
+        res.json({ message: 'Sign-out successful' });
+
+        //res.redirect('/');
     } catch (error) {
         console.error('Error in signOut controller:', error);
         res.status(500).json({ message: 'Internal server error' });
@@ -122,36 +125,39 @@ const signOut = (req, res) => {
 
 
 const resetPassword = async (req, res) => {
-    try {
-        const { userName, newPassword } = req.body;
+  try {
+    const { userName, newPassword } = req.body;
 
-        if (!userName || !newPassword) {
-            return res.status(400).json({ message: 'Username and new password are required' });
-        }
-
-        // Find the user in the database 
-        const user = await User.findOne({ userName });
-        if (!user) {
-            return res.status(404).json({ message: 'User not found' });
-        }
-
-         // Generate a salt
-    const salt = await bcrypt.genSalt(10);
-
-        // Hash the new password
-        const hashedPassword = await bcrypt.hash(newPassword, salt);
-
-        // Update the user's password in the database
-        user.password = hashedPassword;
-        await user.save();
-
-        // Optionally, send a password reset confirmation email or perform any other necessary actions
-
-        res.json({ message: 'Password reset successful' });
-    } catch (error) {
-        console.error('Error in resetPassword controller:', error);
-        res.status(500).json({ message: 'Internal server error' });
+    if (!userName || !newPassword) {
+      return res.status(400).json({ message: 'Username and new password are required' });
     }
+
+    // Find the user in the database
+    const user = await User.findOne({ userName });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Generate a salt
+    const saltRounds = 10;
+    const salt = await bcrypt.genSalt(saltRounds);
+
+    // Hash the new password
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+    // Update the user's password in the database
+    user.password = hashedPassword;
+    await user.save();
+
+    // Optionally, send a password reset confirmation email or perform any other necessary actions
+
+    res.json({ message: 'Password reset successful' });
+  } catch (error) {
+    console.error('Error in resetPassword controller:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
 };
+
+
 
 module.exports = { signUp, signIn, signOut, resetPassword };
