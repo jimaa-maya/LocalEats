@@ -63,6 +63,10 @@ const dishesSchema = mongoose.Schema(
       type: [String],
       required: true,
     },
+    preferences: {
+      type: [String],
+      default: [],
+    },
   },
   { timestamps: true }
 );
