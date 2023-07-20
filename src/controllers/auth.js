@@ -1,10 +1,13 @@
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
+//const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const User = require('../models/users');
 const { generateToken } = require('../middleware/checkAuth');
 require('dotenv').config();
+const { validationResult } = require('express-validator');
 
 
+/*
 const signUp = async (req, res) => {
   try {
     const { userName, email, password, address, phoneNumber, role } = req.body;
@@ -74,6 +77,48 @@ const signUp = async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 };
+*/
+
+const signUp = async (req, res) => {
+  try {
+    const { userName, email, password, address, phoneNumber, role } = req.body;
+
+    if (!userName || !email || !password || !role) {
+      return res.status(400).json({ message: 'All required fields must be provided' });
+    }
+
+     // Check if user already exists in the database
+     const existingUserByEmail = await User.findOne({ email });
+     if (existingUserByEmail) {
+       return res.status(409).json({ message: 'Email already exists' });
+     }
+ /*
+    // Check if user already exists in the database
+    const existingUser = await User.findOne({ userName });
+    if (existingUser) {
+      return res.status(409).json({ message: 'Username already exists' });
+    }
+*/
+    // Create a new user instance with the provided details
+    const newUser = new User({
+      userName,
+      email,
+      password,
+      address: { ...address }, // Use the address object as provided (assuming address is an object with fields like apartmentNo, streetNo, etc.)
+      phoneNumber,
+      role,
+    });
+
+    // Save the user to the database
+    await newUser.save();
+
+    return res.json({ message: 'Sign-up successful' });
+  } catch (error) {
+    console.error('Error in signUp controller:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
 
 
 const signIn = async (req, res) => {
@@ -126,6 +171,35 @@ const signOut = (req, res) => {
 
 const resetPassword = async (req, res) => {
   try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const { userName, newPassword } = req.body;
+
+    // Find the user in the database
+    const user = await User.findOne({ userName });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Update the user's password directly on the user object
+    user.password = newPassword;
+    await user.save();
+
+    // Optionally, send a password reset confirmation email or perform any other necessary actions
+
+    res.json({ message: 'Password reset successful' });
+  } catch (error) {
+    console.error('Error in resetPassword controller:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+/*
+const resetPassword = async (req, res) => {
+  try {
     const { userName, newPassword } = req.body;
 
     if (!userName || !newPassword) {
@@ -158,6 +232,6 @@ const resetPassword = async (req, res) => {
   }
 };
 
-
+*/
 
 module.exports = { signUp, signIn, signOut, resetPassword };
