@@ -18,7 +18,7 @@ app.set("views", "./views");
 app.use(passport.initialize());
 
 // Mount all routes from the routes directory under the '/api' path
-app.use('/api', apiRoutes);
+app.use('/', apiRoutes);
 
 app.listen(port, () => {
   console.log(`Server is running on ${port}`);
