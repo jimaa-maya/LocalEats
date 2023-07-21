@@ -1,4 +1,3 @@
-// validationFunctions.js
 const { check, validationResult, body } = require('express-validator');
 
 // Validate the username

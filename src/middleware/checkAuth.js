@@ -23,7 +23,7 @@ const generateToken = (res, user) => {
 
 // eslint-disable-next-line consistent-return
 const authenticate = (req, res, next) => {
-  const token = req.query.token; // Extract the token from the query parameter
+  const token = req.cookies.jwt || req.header('Authorization');
 
   if (!token) {
     return res.status(401).json({ error: 'Unauthorized' });
