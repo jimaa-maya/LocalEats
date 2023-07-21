@@ -43,6 +43,9 @@ const signUp = async (req, res) => {
     // Save the user to the database
     await newUser.save();
 
+    // Generate and set the JWT token for the newly signed-up user
+    generateToken(res, newUser);
+
     return res.json({ message: 'Sign-up successful' });
   } catch (error) {
     console.error('Error in signUp controller:', error);
