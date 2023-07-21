@@ -1,5 +1,5 @@
 const express = require('express');
-const routes = express.Router();
+const router = express.Router();
 
 const userRoutes = require('./users');
 const dishesRoutes = require('./dishes');
@@ -9,11 +9,11 @@ const authRoutes = require('./auth');
 const authRoutes = require('./auth');
 const userRoutes = require('./users');
 
-routes.use('/auth', authRoutes);
-routes.use('/user', userRoutes);
+router.use('/auth', authRoutes);
+router.use('/user', userRoutes);
 router.use('/dishes', dishesRoutes);
 router.use('/orders', ordersRoutes);
 router.use('/cart', cartRoutes);
 
 
-module.exports = routes;
+module.exports = router;

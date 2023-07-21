@@ -159,11 +159,11 @@ exports.deleteUser = async (req, res) => {
     }
 };
 
-module.exports = {
-  createUser,
-  getAllUsers,
-  getUserById,
-  updateUser,
-  deleteUser,
+// module.exports = {
+//   createUser,
+//   getAllUsers,
+//   getUserById,
+//   updateUser,
+//   deleteUser,
   
-};
+// };
