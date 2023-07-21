@@ -41,10 +41,12 @@ exports.createUser = async (req, res) => {
 // Get all users
 exports.getAllUsers = async (req, res) => {
     // Check authorization 
-    const token = req.cookies.jwt;
-    if (!token) {
-        return res.status(401).json({ message: 'Unauthorized!' });
-    }
+    // const token = req.cookies.jwt;
+    // if (!token) {
+    //     return res.status(401).json({ message: 'Unauthorized!' });
+    // }
+    // Nezir comment: no need to do authorization again since we added a middleware when
+    // calling this req . the checkAuth.authenticate. thats why i deleted it
 
     try {
         // Verify the token and decode the data (e.g., user ID, role, etc.)
@@ -63,10 +65,13 @@ exports.getAllUsers = async (req, res) => {
 // Get a single user by ID
 exports.getUserById = async (req, res) => {
     // Check authorization 
-    const token = req.cookies.jwt;
-    if (!token) {
-        return res.status(401).json({ message: 'Unauthorized!' });
-    }
+    // const token = req.cookies.jwt;
+    // if (!token) {
+    //     return res.status(401).json({ message: 'Unauthorized!' });
+    // }
+    // Nezir comment: no need to do authorization again since we added a middleware when
+    // calling this req . the checkAuth.authenticate. thats why i deleted it
+
 
     try {
         // Verify the token and decode the data (e.g., user ID, role, etc.)
@@ -87,10 +92,13 @@ exports.getUserById = async (req, res) => {
 // Update a user by ID
 exports.updateUser = async (req, res) => {
     // Check authorization 
-    const token = req.cookies.jwt;
-    if (!token) {
-        return res.status(401).json({ message: 'Unauthorized!' });
-    }
+    // const token = req.cookies.jwt;
+    // if (!token) {
+    //     return res.status(401).json({ message: 'Unauthorized!' });
+    // }
+     // Nezir comment: no need to do authorization again since we added a middleware when
+    // calling this req . the checkAuth.authenticate. thats why i deleted it
+
 
     try {
         // Verify the token and decode the data (e.g., user ID, role, etc.)
@@ -128,10 +136,13 @@ exports.updateUser = async (req, res) => {
 // Delete a user by ID
 exports.deleteUser = async (req, res) => {
     // Check authorization 
-    const token = req.cookies.jwt;
-    if (!token) {
-        return res.status(401).json({ message: 'Unauthorized!' });
-    }
+    // const token = req.cookies.jwt;
+    // if (!token) {
+    //     return res.status(401).json({ message: 'Unauthorized!' });
+    // }
+     // Nezir comment: no need to do authorization again since we added a middleware when
+    // calling this req . the checkAuth.authenticate. thats why i deleted it
+
 
     try {
         // Verify the token and decode the data (e.g., user ID, role, etc.)
@@ -159,11 +170,30 @@ exports.deleteUser = async (req, res) => {
     }
 };
 
-// module.exports = {
-//   createUser,
-//   getAllUsers,
-//   getUserById,
-//   updateUser,
-//   deleteUser,
-  
-// };
+exports.updateAddress = async (req,res) =>{
+    
+    try{
+        const userId = req.params.id;
+        const userBody = req.body;
+        const user = await User.findByIdAndUpdate(userId, userBody,{new: true});
+        if(!user){
+            res.status(400).json({error: 'user not found!'})
+        }
+
+    }catch(err){
+        console.log(err)
+    }
+}
+
+exports.getAddress = async (req,res) =>{
+    try{
+        const userId = req.params.id;
+        const user = await User.findById(userId);
+        if(!user){
+            res.status(400).json({err: 'user not found'})
+        }
+        res.status(201).json(user.address);
+    }catch(err){
+        console.log(err)
+    }
+}
