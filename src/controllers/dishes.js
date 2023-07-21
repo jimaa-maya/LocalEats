@@ -1,13 +1,12 @@
-const multer = require('multer');
 const Dishes = require('../models/dishes');
 const User = require('../models/users');
-const { upload } = require('../app');
 
 // getting all dishes
 
 const getAllDishes = async (req, res) => {
   try {
     const dishes = await Dishes.find();
+    // return dishes;
     res.json(dishes);
   } catch (error) {
     res.status(422).json({ message: 'The dish name is required' });
@@ -151,7 +150,7 @@ const fetchDishImage = async (req, res) => {
 // Creating a new dish (for dish owners (POST))
 
 // eslint-disable-next-line consistent-return
-const createDish = async (req, res) => {
+/* const createDish = async (req, res) => {
   try {
     // handling image upload
     upload.single('image')(req, res, async (err) => {
@@ -191,7 +190,7 @@ const createDish = async (req, res) => {
       .status(500)
       .json({ error: 'An error occurred while creating the dish' });
   }
-};
+}; */
 
 // Updating dish (for dish owners (PUT))
 
@@ -390,7 +389,7 @@ module.exports = {
   fetchAllDishImages,
   fetchDishImage,
   getDishesByLocation,
-  createDish,
+  // createDish,
   updateDish,
   updateDishImage,
   removeDish,

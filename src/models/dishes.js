@@ -2,11 +2,6 @@ const mongoose = require('mongoose');
 
 const reviewSchema = mongoose.Schema(
   {
-    user_id: {
-      type: mongoose.Schema.Types.ObjectId,
-      required: true,
-      ref: 'Users',
-    },
     content: {
       type: String,
       required: true,
@@ -52,12 +47,6 @@ const dishesSchema = mongoose.Schema(
     review: {
       type: [reviewSchema], // Array of review objs
       default: [],
-    },
-    rating: {
-      type: Number,
-      default: 0, // Default rating to 0
-      min: 0,
-      max: 5,
     },
     dishType: {
       type: [String],
