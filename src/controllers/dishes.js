@@ -1,3 +1,7 @@
+/* eslint-disable no-console */
+const { v4: uuidv4 } = require('uuid'); // For generating unique filenames
+const { ref, uploadBytes, deleteObject } = require('firebase/storage');
+const storage = require('../services/firebaseConfig');
 const Dishes = require('../models/dishes');
 const User = require('../models/users');
 
@@ -149,48 +153,44 @@ const fetchDishImage = async (req, res) => {
 
 // Creating a new dish (for dish owners (POST))
 
-// eslint-disable-next-line consistent-return
-/* const createDish = async (req, res) => {
+const createDish = async (req, res) => {
   try {
-    // handling image upload
-    upload.single('image')(req, res, async (err) => {
-      // 'image' should match the name attribute of the file input field in the form
-      if (err instanceof multer.MulterError) {
-        return res.status(400).json({
-          error:
-            'Error uploading the file. Please check the file format and size.',
-        });
-      }
-      // for non multer errors
-      if (err) {
-        return res
-          .status(500)
-          .json({ error: 'An error occurred during image upload' });
-      }
+    const { dishName, description, price, dishType } = req.body;
 
-      // if there is no errors; extract the necessary info from the req.body:
-      const { dishName, description, price, dishType } = req.body;
+    console.log(req.file);
 
-      // creating a new dish
-      const dish = new Dishes({
-        dishName,
-        description,
-        image_url: req.file.buffer,
-        price,
-        dishType,
-      });
+    if (!req.file) {
+      return res.status(400).json({ error: 'No image file provided.' });
+    }
 
-      // saving to the database
-      await dish.save();
+    // Create a new file name for the image
+    const fileName = `dishes/${uuidv4()}-${req.file.originalname}`;
 
-      return res.status(201).json({ message: 'Dish created successfully' });
+    // Upload the image to Firebase Storage
+    await uploadBytes(ref(storage, fileName), req.file.buffer);
+
+    // Get the public URL of the uploaded image
+    const imageUrl = `https://storage.googleapis.com/${process.env.FIREBASE_STORAGE_BUCKET}/${fileName}`;
+
+    // Save the image URL in the database along with other dish details
+    const dish = new Dishes({
+      dishName,
+      description,
+      image_url: imageUrl, // Save the public URL of the image
+      price,
+      dishType,
     });
+
+    await dish.save();
+
+    return res.status(201).json({ message: 'Dish created successfully' });
   } catch (error) {
+    console.error('Error creating dish:', error);
     return res
       .status(500)
       .json({ error: 'An error occurred while creating the dish' });
   }
-}; */
+};
 
 // Updating dish (for dish owners (PUT))
 
@@ -230,23 +230,42 @@ const updateDishImage = async (req, res) => {
     }
 
     // checking if a new image file was uploaded
-
     if (!req.file) {
       return res.status(400).json({ message: 'No image file provided.' });
     }
 
-    // updating dish's image with the new file
+    // Get the existing image URL from the database
+    const existingImageUrl = dish.image_url;
 
-    dish.image_url = req.file.buffer;
+    // Create a new file name for the image
+    const fileName = `dishes/${uuidv4()}-${req.file.originalname}`;
 
-    // saving to the database
+    // Upload the new image to Firebase Storage
+    await uploadBytes(ref(storage, fileName), req.file.buffer, {
+      contentType: req.file.mimetype,
+    });
+
+    // Get the public URL of the uploaded image
+    const newImageUrl = `https://storage.googleapis.com/${process.env.FIREBASE_STORAGE_BUCKET}/${fileName}`;
+
+    // Updating the dish's image_url with the new Firebase Storage URL
+    dish.image_url = newImageUrl;
     await dish.save();
 
-    return res.status(200).json({ message: 'Dish image updated succesfully.' });
+    // If there was an existing image, delete it from Firebase Storage
+    if (existingImageUrl) {
+      const existingFileName = existingImageUrl.split('/').pop();
+      await deleteObject(ref(storage, `dishes/${existingFileName}`));
+    }
+
+    return res
+      .status(200)
+      .json({ message: 'Dish image updated successfully.' });
   } catch (error) {
+    console.error('Error updating dish image:', error);
     return res
       .status(500)
-      .json({ error: ' An error occured while updating the dish image ' });
+      .json({ error: 'An error occurred while updating the dish image' });
   }
 };
 
@@ -389,7 +408,7 @@ module.exports = {
   fetchAllDishImages,
   fetchDishImage,
   getDishesByLocation,
-  // createDish,
+  createDish,
   updateDish,
   updateDishImage,
   removeDish,
