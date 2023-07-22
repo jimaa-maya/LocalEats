@@ -1,8 +1,8 @@
 require('dotenv').config();
 const express = require('express');
 const passport = require('passport');
-const cookieParser = require('cookie-parser');
 const connectToMongo = require('./db/connection');
+const cookieParser = require('cookie-parser');
 require('./middleware/passport-setup');
 const apiRoutes = require('./routes');
 
@@ -12,17 +12,22 @@ const port = 3000;
 app.use(express.json());
 app.set('view engine', 'ejs');
 app.set('views', './views');
+app.use(cookieParser(process.env.SECRET_KEY));
 app.use(passport.initialize());
 
-app.listen(port, () => {
-  // eslint-disable-next-line no-console
-  console.log(`Server is running on ${port}`);
-  connectToMongo();
-});
-app.use(cookieParser());
+// Connect to MongoDB
+connectToMongo();
+
+// API Routes
 app.use('/api', apiRoutes);
+
+// Home Route
 app.get('/', (req, res) => {
   res.render('home');
 });
 
-module.exports = { app };
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
+
+module.exports = app;

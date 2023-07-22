@@ -33,7 +33,7 @@ passport.use(
   )
 );
 
-passport.use(
+/*passport.use(
   new FacbookStrategy({
     clientID: process.env.FAPP_CLIENT_ID,
     clientSecret: process.env.FAPP_CLIENT_SECRET,
@@ -43,4 +43,4 @@ passport.use(
   function(token , rereshToken, profile, done){
     
   })
-);
+); */
