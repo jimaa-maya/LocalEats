@@ -1,13 +1,19 @@
 const express = require('express');
-const routes = express.Router();
+const router = express.Router();
 
+const userRoutes = require('./users');
+const dishesRoutes = require('./dishes');
+const ordersRoutes = require('./orders');
+const cartRoutes = require('./cart');
+const authRoutes = require('./auth');
 const authRoutes = require('./auth');
 const userRoutes = require('./users');
-const signRoutes = require('./sign')
+const signRoutes = require('./sign');
 
-routes.use('/auth', authRoutes);
-routes.use('/sign', signRoutes);
-routes.use('/user', userRoutes);
+router.use('/auth', authRoutes);
+router.use('/user', userRoutes);
+router.use('/dishes', dishesRoutes);
+router.use('/orders', ordersRoutes);
+router.use('/cart', cartRoutes);
 
-
-module.exports = routes;
+module.exports = router;
