@@ -15,7 +15,7 @@ const dishesSchema = mongoose.Schema({
   },
   dishName: {
     type: String,
-    required: true,
+    required: [true, "Dish name is required"],
   },
   description: {
     type: String,
@@ -25,7 +25,7 @@ const dishesSchema = mongoose.Schema({
   },
   price: {
     type: Number,
-    required: true,
+    required: [true,"Price is requird"],
   },
   review: {
     type: [String],
@@ -33,7 +33,7 @@ const dishesSchema = mongoose.Schema({
   },
   dishType: {
     type: [String],
-    required: true,
+    required: [true, "Dish type is required"],
   },
   preferences: {
     type: [String],
