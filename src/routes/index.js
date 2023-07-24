@@ -8,13 +8,12 @@ const cartRoutes = require('./cart');
 const authRoutes = require('./auth');
 const authRoutes = require('./auth');
 const userRoutes = require('./users');
-const signRoutes = require('./sign')
+const signRoutes = require('./sign');
 
 router.use('/auth', authRoutes);
 router.use('/user', userRoutes);
 router.use('/dishes', dishesRoutes);
 router.use('/orders', ordersRoutes);
 router.use('/cart', cartRoutes);
-
 
 module.exports = router;
