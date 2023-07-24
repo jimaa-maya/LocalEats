@@ -5,6 +5,13 @@ const SALT_COST_FACTOR = 10; //salt rounds
 Schema = mongoose.Schema;
 
 const addressSchema = new Schema({
+  address_id: {
+    type: String,
+    default: function () {
+      return new mongoose.Types.ObjectId().toHexString();
+    },
+    unique: true,
+  },
   apartmentNo: {
     //Not required since might be a house (no apartment number).
     type: Number,
@@ -15,38 +22,59 @@ const addressSchema = new Schema({
   buildingNo: {
     //building or house number.
     type: Number,
-    required: true,
+    
   },
   city: {
     type: String,
-    required: true,
+    
   },
   country: {
     type: String,
-    required: true,
+    
   },
 });
 
 const userSchema = new Schema(
   {
     user_id: {
-      type: String, // Nezir changed the value for String because of i got casterror
-      required: true,
+      type: String,
+      default: function () {
+        return new mongoose.Types.ObjectId().toHexString();
+      },
       unique: true,
-      default: mongoose.Types.ObjectId, // Generate a new ObjectId by default
     },
     userName: {
       type: String,
-      required: true,
+      required: [true, "User name must not be empty"],
+      minlength: [4, 'Username must have more than 4 letters.'],
       index: { unique: true }, // Create an index for faster lookup and enforce uniqueness
     },
     email: {
       type: String,
-      required: true,
-      unique: true,
+      required: [true, "Email must not be empty"],
+      unique: [true, 'This email already used.'],
+      validate: {
+        validator: function (value) {
+          // Custom validation for the email field
+          // Check if it's a valid email format
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          return emailRegex.test(value);
+        },
+        message: 'The email should be a valid email format',
+      },
     },
     password: {
       type: String,
+      required: [true, "Password is required"],
+      validate: {
+        validator: function (value) {
+          // Custom validation for the password field
+          // Check if it contains at least one number, one uppercase letter, one lowercase letter, and at least 5 characters long
+          const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{5,}$/;
+          return passwordRegex.test(value);
+        },
+        message: 'Password must contain at least one number, one uppercase letter, one lowercase letter, and be at least 5 characters long.',
+      },
     },
     address: {
       type: addressSchema, // Use the addressSchema as the type for the address field

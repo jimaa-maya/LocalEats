@@ -8,6 +8,7 @@ const cartRoutes = require('./cart');
 const authRoutes = require('./auth');
 const authRoutes = require('./auth');
 const userRoutes = require('./users');
+const signRoutes = require('./sign')
 
 router.use('/auth', authRoutes);
 router.use('/user', userRoutes);
