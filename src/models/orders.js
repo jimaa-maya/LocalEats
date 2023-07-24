@@ -9,20 +9,21 @@ const ordersSchema = new mongoose.Schema({
   user_id: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
-     ref: 'User'
+     ref: 'User',
   },
   dish_id: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
-    ref: 'Dishes'
+    ref: 'Dishes',
   },
   quantity: {
     type: Number,
-    required: true
+    required: true,
+    default: 1,
   },
   orderStatus: {
     type: String,
-    required: true
+    required: [true, "order Status is required (active, inactive)"],
   },
   otherInfo: {
     type: String,
