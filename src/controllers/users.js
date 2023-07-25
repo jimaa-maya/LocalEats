@@ -50,7 +50,7 @@ exports.getAllUsers = async (req, res) => {
 
     try {
         // Verify the token and decode the data (e.g., user ID, role, etc.)
-        const decodedToken = jwt.verify(token, process.env.SECRET_KEY);
+        // const decodedToken = jwt.verify(token, process.env.SECRET_KEY);
                 
         // If authorization is successful, fetch all users
         const users = await User.find();
@@ -75,7 +75,7 @@ exports.getUserById = async (req, res) => {
 
     try {
         // Verify the token and decode the data (e.g., user ID, role, etc.)
-        const decodedToken = jwt.verify(token, process.env.SECRET_KEY);
+        //const decodedToken = jwt.verify(token, process.env.SECRET_KEY);
 
 
         const user = await User.findById(req.params.id);
@@ -102,7 +102,7 @@ exports.updateUser = async (req, res) => {
 
     try {
         // Verify the token and decode the data (e.g., user ID, role, etc.)
-        const decodedToken = jwt.verify(token, process.env.SECRET_KEY);
+        //const decodedToken = jwt.verify(token, process.env.SECRET_KEY);
         const userId = req.params.id;
         const updateData = req.body;
 
@@ -146,7 +146,7 @@ exports.deleteUser = async (req, res) => {
 
     try {
         // Verify the token and decode the data (e.g., user ID, role, etc.)
-        const decodedToken = jwt.verify(token, process.env.SECRET_KEY);
+        //const decodedToken = jwt.verify(token, process.env.SECRET_KEY);
         
         const userId = req.params.id;
         // Check if the user ID is valid
