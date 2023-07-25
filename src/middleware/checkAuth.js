@@ -1,8 +1,8 @@
+/* eslint-disable no-unused-vars */
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const express = require('express');
 const User = require('../models/users');
-
 
 const generateToken = (res, user) => {
   const { userName, email } = user;
@@ -19,7 +19,6 @@ const generateToken = (res, user) => {
     signed: true,
   });
 };
-
 
 // eslint-disable-next-line consistent-return
 const authenticate = (req, res, next) => {
@@ -38,5 +37,24 @@ const authenticate = (req, res, next) => {
   }
 };
 
+// eslint-disable-next-line consistent-return
+const isCook = (req, res, next) => {
+  if (req.user.role !== 'cooks') {
+    return res.status(403).json({
+      error: 'Forbidden - Only cooks are allowed to access this route',
+    });
+  }
+  next();
+};
 
-module.exports = { generateToken, authenticate };
+// eslint-disable-next-line consistent-return
+const isUser = (req, res, next) => {
+  if (req.user.role !== 'users') {
+    return res.status(403).json({
+      error: 'Forbidden - Only users are allowed to access this route',
+    });
+  }
+  next();
+};
+
+module.exports = { generateToken, authenticate, isCook, isUser };
