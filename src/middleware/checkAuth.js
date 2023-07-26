@@ -28,6 +28,14 @@ const authenticate = (req, res, next) => {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
+  // Check if the token starts with "Bearer " and extract the actual token
+  let actualToken;
+  if (token.startsWith('Bearer ')) {
+    actualToken = token.split(' ')[1]; 
+  } else {
+    actualToken = token; 
+  }
+
   try {
     const decoded = jwt.verify(token, process.env.SECRET_KEY);
     req.user = decoded;
