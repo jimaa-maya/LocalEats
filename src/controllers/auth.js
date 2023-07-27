@@ -1,29 +1,16 @@
 const jwt = require('jsonwebtoken');
-//const bcrypt = require('bcrypt');
 const bcrypt = require('bcryptjs');
 const User = require('../models/users');
 const { generateToken } = require('../middleware/checkAuth');
 require('dotenv').config();
-const { validationResult } = require('express-validator');
-const {
-  validateUsername,
-  validateEmail,
-  validatePassword,
-  handleValidationErrors,
-} = require('../middleware/validation');
+
 
 
 const signUp = async (req, res) => {
   console.log('Request Body:', req.body);
 
   try {
-    // Validate the request body using the validation functions
-    await Promise.all([
-      ...validateUsername(req.body.userName),
-      ...validateEmail(req.body.email),
-      ...validatePassword(req),
-    ]);
-
+    
     // Check if user already exists in the database
     const existingUserByEmail = await User.findOne({ email: req.body.email });
     if (existingUserByEmail) {
@@ -107,9 +94,7 @@ const signOut = (req, res) => {
 
 const resetPassword = async (req, res) => {
   try {
-    // Validate the request body
-    await Promise.all(validatePassword(req));
-
+    
     const { userName, newPassword } = req.body;
 
     // Find the user in the database
