@@ -10,6 +10,13 @@ const authRoutes = require('./auth');
 const userRoutes = require('./users');
 const signRoutes = require('./sign');
 
+const signRoutes = require('./sign');
+const ordersRoutes = require('./orders');
+const dishRoutes = require('./dishes');
+const signRoutes = require('./sign');
+const signRoutes = require('./sign');
+const cartRoutes = require('./cart');
+
 router.use('/auth', authRoutes);
 router.use('/user', userRoutes);
 router.use('/dishes', dishesRoutes);

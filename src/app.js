@@ -12,9 +12,21 @@ const port = 3000;
 app.use(express.json());
 app.set('view engine', 'ejs');
 app.set('views', './views');
+app.use(cookieParser(process.env.SECRET_KEY));
 app.use(passport.initialize());
 
-// Start the server
+// Connect to MongoDB
+connectToMongo();
+
+// API Routes
+app.use('/api', apiRoutes);
+
+// Home Route
+app.get('/', (req, res) => {
+  res.render('home');
+});
+app.use(passport.initialize());
+
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
