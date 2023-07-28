@@ -88,7 +88,7 @@ describe('GET /cart', () => {
   it('should return cart items for a user', async () => {
     const userId = 'user1';
 
-    const response = await request(app).get('/cart').query({ user_id: userId });
+    const response = await request(app).get('/cartitems').query({ user_id: userId });
 
     expect(response.status).to.equal(200);
     expect(response.body).to.deep.equal(testCartItems);
@@ -99,7 +99,7 @@ describe('GET /cart', () => {
 
     const userId = 'user2';
 
-    const response = await request(app).get('/cart').query({ user_id: userId });
+    const response = await request(app).get('/cartitems').query({ user_id: userId });
 
     expect(response.status).to.equal(500);
     expect(response.body).to.deep.equal({ error: 'Failed to get cart items' });
@@ -115,7 +115,7 @@ describe('PUT /cart/add-dish', () => {
       quantity: 5,
     };
 
-    const response = await request(app).put('/cart/add-dish').send(cartUpdate);
+    const response = await request(app).put('/cartitems/add').send(cartUpdate);
 
     expect(response.status).to.equal(201);
     expect(response.body).to.deep.equal(testCartItems[0]);
@@ -128,7 +128,7 @@ describe('PUT /cart/add-dish', () => {
       // quantity is missing
     };
 
-    const response = await request(app).put('/cart/add-dish').send(invalidCart);
+    const response = await request(app).put('/cartitems/add').send(invalidCart);
 
     expect(response.status).to.equal(400);
     expect(response.body).to.deep.equal({ error: 'user_id, dish_id, and quantity are required fields' });
@@ -143,7 +143,7 @@ describe('PUT /cart/add-dish', () => {
       quantity: 3,
     };
 
-    const response = await request(app).put('/cart/add-dish').send(cartUpdate);
+    const response = await request(app).put('/cartitems/add').send(cartUpdate);
 
     expect(response.status).to.equal(404);
     expect(response.body).to.deep.equal({ error: 'Cart not found' });
@@ -158,7 +158,7 @@ describe('PUT /cart/add-dish', () => {
       quantity: 3,
     };
 
-    const response = await request(app).put('/cart/add-dish').send(cartUpdate);
+    const response = await request(app).put('/cartitems/add').send(cartUpdate);
 
     expect(response.status).to.equal(500);
     expect(response.body).to.deep.equal({ error: 'Unable to add dish to cart' });

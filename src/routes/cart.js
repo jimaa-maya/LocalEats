@@ -3,9 +3,9 @@ const routes = express.Router();
 const cartController = require('../controllers/cart');
 const cartService = require('../utils/cartService'); 
 
-routes.post('/create', cartController.createCart);
-routes.get('/getitem', cartController.getCartItems);
-routes.post('/additem', cartController.addDishToCart);
+routes.post('/cart', cartController.createCart);
+routes.get('/cartitems', cartController.getCartItems);
+routes.post('/cartitems/add', cartController.addDishToCart);
 
 routes.post('/updateUserInCart', async (req, res) => {
   try {
