@@ -7,7 +7,7 @@ require('./middleware/passport-setup');
 const apiRoutes = require('./routes');
 
 const app = express();
-const port = 3000;
+const port = 3001;
 
 app.use(express.json());
 app.set('view engine', 'ejs');
@@ -28,6 +28,7 @@ app.get('/', (req, res) => {
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
+  
 });
 
 module.exports = app;
