@@ -2,9 +2,9 @@ const mongoose = require('mongoose');
 
 const cartSchema = new mongoose.Schema(
     {
-        
         user_id: {
             type: String,
+            unique: true
         },
         dish_id: {
             type: String,

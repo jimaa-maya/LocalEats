@@ -11,6 +11,11 @@ const newCart = {
   dish_id: 'dish456',
   quantity: 2,
 };
+const newCart2 = {
+  user_id: 'user123',
+  dish_id: 'dish999',
+  quantity: 3,
+};
 
 describe("Creating cart", () => {
   it("POST /api/cart/cart it in the response", (done) => {
@@ -37,16 +42,15 @@ describe("Creating cart", () => {
       });
   });
 
-  it("POST /api/cart/cart it in the response", (done) => {
+  it("POST /api/cart/cartitems/add it in the response", (done) => {
     request(app)
-      .post("/api/cart/cart")
+      .post("/api/cart/cartitems/add")
       .set("Content-Type", "application/json")
-      .send(newCart)
+      .send(newCart2)
       .expect(201, async(err, res) => {
         if (err) return done(err);
         expect(res.body.user_id).to.equal('user123');
-        expect(res.body.dish_id).to.equal('dish456');
-        expect(res.body.quantity).to.equal(2);
+        expect(res.body.dish_id).to.equal('dish999');
         done();
       });
   });
