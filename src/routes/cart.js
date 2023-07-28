@@ -3,6 +3,24 @@ const routes = express.Router();
 const cartController = require('../controllers/cart');
 const cartService = require('../utils/cartService'); 
 
+/**
+*  @swagger
+*    components:
+*      schemas:
+*        Cart:
+*          type: object
+*          required:
+*            - user_id
+*            - dish_id
+*            - quantity
+*          
+*          example:
+*              title: The Pragmatic Programmer
+*              author: Andy Hunt / Dave Thomas
+*              finished: true
+*/
+
+
 routes.post('/cart', cartController.createCart);
 routes.get('/cartItems', cartController.getCartItems);
 routes.post('/cartItems', cartController.addDishToCart);
