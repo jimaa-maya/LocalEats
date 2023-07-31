@@ -20,9 +20,8 @@ const dishesSchema = mongoose.Schema(
   {
     dish_id: {
       type: mongoose.Schema.Types.ObjectId,
-      required: true,
       unique: true,
-      default: mongoose.Types.ObjectId,
+      // no need to set a default here
     },
     user_id: {
       type: mongoose.Schema.Types.ObjectId,
@@ -58,4 +57,13 @@ const dishesSchema = mongoose.Schema(
   },
   { timestamps: true }
 );
+
+// pre-save middleware to generate dish_id b4 saving
+dishesSchema.pre('save', function (next) {
+  if (!this.dish_id) {
+    this.dish_id = mongoose.Types.ObjectId();
+  }
+  next();
+});
+
 module.exports = mongoose.model('Dishes', dishesSchema);

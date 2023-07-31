@@ -1,9 +1,10 @@
 /* eslint-disable no-console */
 const { v4: uuidv4 } = require('uuid'); // For generating unique filenames
 const { ref, uploadBytes, deleteObject } = require('firebase/storage');
+// eslint-disable-next-line no-unused-vars
+const multer = require('multer');
 const storage = require('../services/firebaseConfig');
 const Dishes = require('../models/dishes');
-const User = require('../models/users');
 
 // getting all dishes
 
@@ -45,22 +46,18 @@ const filterDishes = async (req, res) => {
   const { dishType, preference } = req.body;
 
   try {
+    // building the query object based on the provided filters
     const query = {};
 
-    // adding dishtype filter if provided
-
     if (dishType) {
-      query.dishType = dishType;
+      query.dishType = { $in: [dishType] }; // match dishes that have the specified dishType
     }
-
-    // adding preference filter if provided
 
     if (preference) {
-      query.preference = preference;
+      query.preferences = { $in: [preference] }; // match dishes that have the specified preference
     }
 
-    // execute the query
-
+    // Execute the query
     const filteredDishes = await Dishes.find(query);
 
     res.json(filteredDishes);
@@ -74,23 +71,14 @@ const filterDishes = async (req, res) => {
 // Searching nearby dishes
 
 const getDishesByLocation = async (req, res) => {
-  const { city, province } = req.query;
+  const { city, country } = req.query;
 
   try {
-    // find the users with matching location
-
-    const users = await User.find({
-      'address.city': city,
-      'adress.province': province,
-    }).select('dish_id');
-
-    // get the dish id's from matching users
-
-    const dishIds = users.map((user) => user.dish_id);
-
-    // fetch the dishes based on the dish id
-
-    const dishes = await Dishes.find({ dish_id: { $in: dishIds } });
+    // Find dishes with matching user location
+    const dishes = await Dishes.find({
+      'user_id.address.city': city,
+      'user_id.address.country': country,
+    });
 
     res.json(dishes);
   } catch (error) {
@@ -105,8 +93,15 @@ const fetchAllDishImages = async (req, res) => {
     const dishes = await Dishes.find({}, 'image_url'); // fetching only images of dishes
 
     const dishImages = dishes.map((dish) => {
+      console.log('dish', dish);
       // converting Buffer data to base64
-      const imageBase64 = dish.image_url.toString('base64');
+      const imageBase64 = dish.image_url?.toString('base64');
+      console.log('imageBase64', imageBase64);
+
+      if (!imageBase64) {
+        // when imageBase64 is undefined or null
+        return null;
+      }
 
       // returning images and its id's
 
@@ -116,8 +111,14 @@ const fetchAllDishImages = async (req, res) => {
       };
     });
 
-    res.json(dishImages);
+    // filtering out null values in dishImages array
+    const filteredDishImages = dishImages.filter((image) => image !== null);
+
+    res.json(filteredDishImages);
+
+    // res.json(dishImages);
   } catch (error) {
+    console.log(error);
     res.status(500).json({
       message: 'Failed to fetch dish images. Please try again later.',
     });
@@ -130,6 +131,8 @@ const fetchDishImage = async (req, res) => {
   const { dishId } = req.params;
 
   try {
+    // fetch the image url after finding the dish by its id
+
     const dish = await Dishes.findById(dishId, 'image_url');
 
     if (!dish) {
@@ -156,9 +159,10 @@ const fetchDishImage = async (req, res) => {
 const createDish = async (req, res) => {
   try {
     const { dishName, description, price, dishType } = req.body;
+    // eslint-disable-next-line camelcase
+    // const { _id: user_id } = req.user; // Assuming the authenticated user's ID is stored in req.user._id
 
-    console.log(req.file);
-
+    // Check if the file was uploaded
     if (!req.file) {
       return res.status(400).json({ error: 'No image file provided.' });
     }
@@ -167,23 +171,30 @@ const createDish = async (req, res) => {
     const fileName = `dishes/${uuidv4()}-${req.file.originalname}`;
 
     // Upload the image to Firebase Storage
-    await uploadBytes(ref(storage, fileName), req.file.buffer);
+    await uploadBytes(ref(storage, fileName), req.file.buffer, {
+      contentType: req.file.mimetype,
+    });
 
     // Get the public URL of the uploaded image
     const imageUrl = `https://storage.googleapis.com/${process.env.FIREBASE_STORAGE_BUCKET}/${fileName}`;
 
-    // Save the image URL in the database along with other dish details
+    // Create a new dish object
     const dish = new Dishes({
       dishName,
       description,
-      image_url: imageUrl, // Save the public URL of the image
+      // eslint-disable-next-line camelcase
+      image_url: imageUrl,
       price,
       dishType,
+      // eslint-disable-next-line camelcase
+      // user_id, // Add the user_id to the dish object
     });
 
+    // Save the dish to the database
     await dish.save();
 
-    return res.status(201).json({ message: 'Dish created successfully' });
+    // Return the dish object
+    return res.status(201).json(dish);
   } catch (error) {
     console.error('Error creating dish:', error);
     return res

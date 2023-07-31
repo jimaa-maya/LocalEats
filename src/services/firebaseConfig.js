@@ -14,6 +14,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 // Getting Firebase Storage instance
-const storage = getStorage(app, 'gs://localeats-8315f.appspot.com');
+const storage = getStorage(app, 'gs://localeats-55552.appspot.com');
 
-module.exports = storage;
+module.exports = { storage };
