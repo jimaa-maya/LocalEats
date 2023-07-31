@@ -25,6 +25,7 @@ app.use('/api', apiRoutes);
 app.get('/', (req, res) => {
   res.render('home');
 });
+app.use(passport.initialize());
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
