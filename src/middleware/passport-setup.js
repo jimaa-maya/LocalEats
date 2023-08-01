@@ -1,6 +1,5 @@
 const passport = require('passport');
 let GoogleStrategy = require('passport-google-oauth20');
-let FacbookStrategy = require('passport-facebook').Strategy;
 
 const User = require('../models/users');
 passport.use(
@@ -32,15 +31,3 @@ passport.use(
     }
   )
 );
-
-/*passport.use(
-  new FacbookStrategy({
-    clientID: process.env.FAPP_CLIENT_ID,
-    clientSecret: process.env.FAPP_CLIENT_SECRET,
-    callbackURL: 'http://localhost:3000/api/auth/facebook/callback',
-    profileFields: ['id', 'displayName', 'name', 'gender','pic', 'email']
-  },
-  function(token , rereshToken, profile, done){
-    
-  })
-); */
