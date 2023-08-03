@@ -20,7 +20,6 @@ const generateToken = (res, user) => {
   });
 };
 
-// eslint-disable-next-line consistent-return
 const authenticate = (req, res, next) => {
   const token = req.cookies.jwt || req.header('Authorization');
 
@@ -44,6 +43,7 @@ const authenticate = (req, res, next) => {
     return res.status(401).json({ error: 'Invalid token' });
   }
 };
+ 
 
 // eslint-disable-next-line consistent-return
 const isCook = (req, res, next) => {
