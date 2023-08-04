@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const express = require('express');
 const User = require('../models/users');
 
-const generateToken = (res, user) => {
+const generateToken = (user) => {
   const { userName, email } = user;
   const payload = {
     userName,
@@ -13,15 +13,12 @@ const generateToken = (res, user) => {
   const token = jwt.sign(payload, process.env.SECRET_KEY, {
     expiresIn: '14d',
   });
-  res.cookie('token', token, {
-    httpOnly: true,
-    maxAge: 1000 * 3600 * 24 * 14,
-    signed: true,
-  });
+  return token;
+  
 };
 
 const authenticate = (req, res, next) => {
-  const token = req.cookies.jwt || req.header('Authorization');
+  const token = req.cookies.token || req.header('Authorization');
 
   if (!token) {
     return res.status(401).json({ error: 'Unauthorized' });
@@ -36,10 +33,11 @@ const authenticate = (req, res, next) => {
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.SECRET_KEY);
+    const decoded = jwt.verify(actualToken, process.env.SECRET_KEY,  {algorithms: ['HS256']} );
     req.user = decoded;
     next();
   } catch (error) {
+    console.error(error);
     return res.status(401).json({ error: 'Invalid token' });
   }
 };
