@@ -4,6 +4,8 @@ const User = require('../models/users');
 const { generateToken } = require('../middleware/checkAuth');
 const sendEmail = require('../utils/email');
 
+const sendEmail = require('../utils/email');
+
 require('dotenv').config();
 
 
@@ -59,6 +61,7 @@ The LocalEats Team`;
     res.status(500).json({ message: 'Internal server error' });
   }
 };
+
 
 
 
