@@ -6,7 +6,7 @@ const {authenticate} = require('../middleware/checkAuth');
 
 routes.post('/signup', signUp);
 routes.post('/signin', signIn);
-routes.get('/signout', signOut);
+routes.get('/signout', authenticate, signOut);
 routes.post('/reset-password', resetPassword);
 
 module.exports = routes;

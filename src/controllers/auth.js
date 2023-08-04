@@ -4,6 +4,8 @@ const User = require('../models/users');
 const { generateToken } = require('../middleware/checkAuth');
 const sendEmail = require('../utils/email');
 
+const sendEmail = require('../utils/email');
+
 require('dotenv').config();
 
 
@@ -33,7 +35,8 @@ const signUp = async (req, res) => {
     await newUser.save();
 
     // Generate and set the JWT token for the newly signed-up user
-    generateToken(res, newUser);
+    const token = generateToken(newUser);
+
 
     // Send the welcome email to the user
     const subject = 'Welcome to LocalEats!';
@@ -48,13 +51,17 @@ Happy eating!
 Best regards,
 The LocalEats Team`;
     sendEmail(req.body.email, subject, welcomeMessage);
-
-    return res.json({ message: 'Sign-up successful' });
+    res.cookie('token', token, {
+      httpOnly: true,
+      maxAge: 1000 * 3600 * 24 * 14,
+    });
+    return res.status(200).json({ message: 'Sign-up successful' });
   } catch (error) {
     console.error('Error in signUp controller:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 };
+
 
 
 
@@ -72,16 +79,21 @@ const signIn = async (req, res) => {
     const user = await User.findOne({ userName });
     if (!user) {
       return res.status(401).json({ message: 'Invalid username or password' });
-    }
 
-    // Compare the provided password with the hashed password stored in the database
+        }
+            // Compare the provided password with the hashed password stored in the database
     const passwordMatch = await bcrypt.compare(password, user.password);
     if (!passwordMatch) {
       return res.status(401).json({ message: 'Invalid username or password' });
     }
 
     // Generate and set the JWT token
-    generateToken(res, user); // Pass the user object to the generateToken function
+    const token = generateToken(user);
+
+    res.cookie('token', token, {
+      httpOnly: true,
+      maxAge: 1000 * 3600 * 24 * 14,
+    });
 
     res.json({ message: 'Sign-in successful' });
   } catch (error) {
@@ -94,8 +106,7 @@ const signIn = async (req, res) => {
 
 const signOut = (req, res) => {
     try {
-        // Clear session data, invalidate tokens, or perform any necessary sign-out actions
-        req.session.destroy(); // Clear the session data for JWT-based authentication
+        res.clearCookie('token'); 
 
 
         res.json({ message: 'Sign-out successful' });
