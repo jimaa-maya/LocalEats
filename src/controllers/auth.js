@@ -103,8 +103,7 @@ const signIn = async (req, res) => {
 
 const signOut = (req, res) => {
     try {
-        // Clear session data, invalidate tokens, or perform any necessary sign-out actions
-        res.clearCookie('token'); // Clear the session data for JWT-based authentication
+        res.clearCookie('token'); 
 
 
         res.json({ message: 'Sign-out successful' });
