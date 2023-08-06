@@ -1,38 +1,36 @@
 const mongoose = require('mongoose');
+const Dishes = require('./dishes'); 
+const User = require('./users'); 
 
-const cartSchema = new mongoose.Schema(
-    {
-        cart_id: {
-            type: mongoose.Schema.Types.ObjectId,
-            default: mongoose.Types.ObjectId,
-            unique: true,
-        },
-        user_id: {
-            type: mongoose.Schema.Types.ObjectId,
-            required: false,
-            ref: 'User',
-        },
-        dish_id: {
-            type: mongoose.Schema.Types.ObjectId,
-            required: true,
-            ref: 'Dishes',
-        },
-        quantity: {
-            type: Number,
-            required: true,
-            min: [1, 'Quantity must be at least 1'], 
-        },
-        status: {
-            type: String,
-            enum: ['active', 'inactive', 'completed'],
-            default: 'active',
-        },
+const cartItemSchema = new mongoose.Schema({
+  dish_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    ref: 'Dishes',
+  },
+  quantity: {
+    type: Number,
+    required: true,
+    min: 1, 
+  },
+});
+
+const cartSchema = new mongoose.Schema({
+  cart_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    default: function () {
+      return new mongoose.Types.ObjectId(); // MongoDB will generate a unique ID
     },
-    {
-        timestamps: true,
-    }
-);
+    unique: true,
+  },
+  user_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    ref: 'User', 
+  },
+  cartItems: [cartItemSchema],
+});
 
-module.exports = mongoose.model('Cart', cartSchema);
+const Cart = mongoose.model('Cart', cartSchema);
 
-
+module.exports = Cart;

@@ -81,8 +81,8 @@ const cartService = require('../utils/cartService');
  *
  */
 
-routes.post('/cart', cartController.createCart);
-routes.get('/cartItems', cartController.getCartItems);
+routes.post('/addcart', cartController.createCart);
+routes.get('/cartItems/:user_id', cartController.getCartItems);
 routes.post('/cartItems', cartController.addDishToCart);
 
 routes.post('/updateUserInCart', async (req, res) => {
