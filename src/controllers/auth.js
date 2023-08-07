@@ -2,6 +2,10 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const User = require('../models/users');
 const { generateToken } = require('../middleware/checkAuth');
+const sendEmail = require('../utils/email');
+
+const sendEmail = require('../utils/email');
+
 require('dotenv').config();
 
 
@@ -31,14 +35,34 @@ const signUp = async (req, res) => {
     await newUser.save();
 
     // Generate and set the JWT token for the newly signed-up user
-    generateToken(res, newUser);
+    const token = generateToken(newUser);
 
-    return res.json({ message: 'Sign-up successful' });
+
+    // Send the welcome email to the user
+    const subject = 'Welcome to LocalEats!';
+    const welcomeMessage = `Welcome to LocalEats, ${req.body.userName}! Thank you for signing up with us. We are excited to have you on board.
+
+Please start exploring the delicious dishes in your neighborhood and place your first order now!
+
+If you have any questions or need assistance, please feel free to contact our support team at support@localeats.com.
+
+Happy eating!
+
+Best regards,
+The LocalEats Team`;
+    sendEmail(req.body.email, subject, welcomeMessage);
+    res.cookie('token', token, {
+      httpOnly: true,
+      maxAge: 1000 * 3600 * 24 * 14,
+    });
+    return res.status(200).json({ message: 'Sign-up successful' });
   } catch (error) {
     console.error('Error in signUp controller:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 };
+
+
 
 
 
@@ -55,16 +79,21 @@ const signIn = async (req, res) => {
     const user = await User.findOne({ userName });
     if (!user) {
       return res.status(401).json({ message: 'Invalid username or password' });
-    }
 
-    // Compare the provided password with the hashed password stored in the database
+        }
+            // Compare the provided password with the hashed password stored in the database
     const passwordMatch = await bcrypt.compare(password, user.password);
     if (!passwordMatch) {
       return res.status(401).json({ message: 'Invalid username or password' });
     }
 
     // Generate and set the JWT token
-    generateToken(res, user); // Pass the user object to the generateToken function
+    const token = generateToken(user);
+
+    res.cookie('token', token, {
+      httpOnly: true,
+      maxAge: 1000 * 3600 * 24 * 14,
+    });
 
     res.json({ message: 'Sign-in successful' });
   } catch (error) {
@@ -77,8 +106,7 @@ const signIn = async (req, res) => {
 
 const signOut = (req, res) => {
     try {
-        // Clear session data, invalidate tokens, or perform any necessary sign-out actions
-        req.session.destroy(); // Clear the session data for JWT-based authentication
+        res.clearCookie('token'); 
 
 
         res.json({ message: 'Sign-out successful' });
@@ -92,10 +120,10 @@ const signOut = (req, res) => {
 
 
 
+
 const resetPassword = async (req, res) => {
   try {
-    
-    const { userName, newPassword } = req.body;
+    const { userName, oldPassword, newPassword } = req.body;
 
     // Find the user in the database
     const user = await User.findOne({ userName });
@@ -103,9 +131,20 @@ const resetPassword = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
+    // Compare the provided old password with the hashed old password stored in the database
+    const isOldPasswordValid = await bcrypt.compare(oldPassword, user.password);
+    if (!isOldPasswordValid) {
+      return res.status(401).json({ message: 'Invalid old password' });
+    }
+
     // Update the user's password directly with the new hashed password
     user.password = newPassword;
     await user.save();
+
+    // Send password reset confirmation email
+    const subject = 'Password Reset Confirmation';
+    const resetConfirmationMessage = 'Your password has been successfully reset.';
+    sendEmail(user.email, subject, resetConfirmationMessage);
 
     res.json({ message: 'Password reset successful' });
   } catch (error) {
@@ -113,7 +152,6 @@ const resetPassword = async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 };
-
 
 
 

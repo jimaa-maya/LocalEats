@@ -1,68 +1,77 @@
-const express = require('express');
 const Cart = require('../models/cart');
 
 
 const createCart = async (req, res) => {
-  try {
-    const { user_id, dish_id, quantity } = req.body;
+  const { user_id } = req.body;
 
-    // validation to ensure required fields are present
-    if (!dish_id || !quantity) {
-      return res.status(400).json({ error: 'dish_id and quantity are required fields' });
-    }
+  try {
+    const userIdString = user_id.toString();
 
     const cart = new Cart({
-      user_id: user_id || null,
-      dish_id,
-      quantity,
+      user_id: userIdString, 
+      cartItems: [],
     });
+console.log(cart);
 
     const savedCart = await cart.save();
-    res.json(savedCart);
+    res.status(201).json(savedCart);
   } catch (error) {
+    console.error('Error creating cart:', error);
     res.status(500).json({ error: 'Failed to create cart' });
   }
 };
 
-const getCartItems = async (req, res) => {
-  try {
-    const userId = req.query.user_id;
-    const cartItems = await Cart.find({ user_id: userId }).populate('dish_id');
-    return res.json(cartItems);
-  } catch (error) {
-    return res.status(500).json({ error: 'Failed to get cart items' });
-  }
-};
 
 const addDishToCart = async (req, res) => {
+  const { user_id, dish_id, quantity } = req.body;
+
   try {
-    const { user_id, dish_id, quantity } = req.body;
-
-    // validation to ensure required fields are present
-    if (!user_id || !dish_id || !quantity) {
-      return res.status(400).json({ error: 'user_id, dish_id, and quantity are required fields' });
-    }
-
-    const cart = await Cart.findOne({ user_id: null });
+    // Find the user's cart
+    let cart = await Cart.findOne({ user_id });
 
     if (!cart) {
-      return res.status(404).json({ error: 'Cart not found' });
+      cart = new Cart({
+        user_id,
+        cartItems: [],
+      });
     }
 
-    cart.user_id = user_id;
-    cart.dish_id = dish_id;
-    cart.quantity = quantity;
+    // Check if the dish is already in the cart
+    const existingCartItem = cart.cartItems.find((item) => item.dish_id.equals(dish_id));
+
+    if (existingCartItem) {
+      existingCartItem.quantity += quantity;
+    } else {
+      cart.cartItems.push({ dish_id, quantity });
+    }
+
     const savedCart = await cart.save();
     res.status(201).json(savedCart);
   } catch (error) {
+    console.error('Error adding dish to cart:', error);
     res.status(500).json({ error: 'Unable to add dish to cart' });
   }
 };
 
+// Get the user's cart items
+const getCartItems = async (req, res) => {
+  const { user_id } = req.params;
 
+  try {
+    const cart = await Cart.findOne({ user_id }).populate('cartItems.dish_id', 'name price');
+    if (!cart) {
+      return res.status(404).json({ message: 'Cart not found' });
+    }
+
+    res.json(cart.cartItems);
+  } catch (error) {
+    console.error('Error getting cart items:', error);
+    res.status(500).json({ error: 'Failed to get cart items' });
+  }
+};
 
 module.exports = {
   createCart,
-  getCartItems,
   addDishToCart,
+  getCartItems,
 };

@@ -1,12 +1,14 @@
 const express = require('express');
-const routes = express.Router();
-const User = require('../controllers/users');
+const router = express.Router();
+const userController = require('../controllers/users');
 const checkAuth = require('../middleware/checkAuth');
-routes.get('/:id', checkAuth.authenticate, User.getUser);
-routes.put('/:id', checkAuth.authenticate, User.putUser);
-routes.put('/role', checkAuth.authenticate, User.addRole);
-routes.get('/role', checkAuth.authenticate, User.getRole);
-routes.put('/address', checkAuth.authenticate, User.addAddress);
-routes.get('/address', checkAuth.authenticate, User.getAddress);
 
-module.exports = routes;
+// Define routes without '/users' at the beginning
+router.get('/', checkAuth.authenticate, userController.getAllUsers);
+router.post('/', checkAuth.authenticate, userController.createUser);
+router.get('/:id', checkAuth.authenticate, userController.getUserById);
+router.put('/:id', checkAuth.authenticate, userController.updateUser);
+router.delete('/:id', checkAuth.authenticate, userController.deleteUser);
+router.put('/:id/address', checkAuth.authenticate, userController.updateAddress);
+router.get('/:id/address',checkAuth.authenticate, userController.getAddress);
+module.exports = router;

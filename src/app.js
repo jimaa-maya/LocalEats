@@ -31,6 +31,7 @@ app.use('/api', apiRoutes);
 app.get('/', (req, res) => {
   res.render('home');
 });
+app.use(passport.initialize());
 
 const options = {
   definition: {
