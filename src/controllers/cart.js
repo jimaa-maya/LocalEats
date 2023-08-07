@@ -1,22 +1,27 @@
 const Cart = require('../models/cart');
 
+
 const createCart = async (req, res) => {
-  const { user_id } = req.body;
-
+  
   try {
-    const userIdString = user_id.toString();
+    const { user_id, dish_id, quantity } = req.body;
+    console.log(user_id)
+    // validation to ensure required fields are present
+    if (!user_id || !dish_id || !quantity) {
+      return res.status(400).json({ error: 'dish_id and quantity are required fields' });
+    }
 
-    const cart = new Cart({
-      user_id: userIdString,
-      cartItems: [],
-    });
-    console.log(cart);
-
-    const savedCart = await cart.save();
+    const cart = {
+      user_id: user_id,
+      dish_id: dish_id,
+      quantity: quantity,
+    };
+    console.log(cart)
+    const savedCart = await Cart.create(cart);
     res.status(201).json(savedCart);
+    
   } catch (error) {
-    console.error('Error creating cart:', error);
-    res.status(500).json({ error: 'Failed to create cart' });
+    res.status(400).json({ error: 'Failed to create carttttt' });
   }
 };
 
@@ -25,14 +30,7 @@ const addDishToCart = async (req, res) => {
 
   try {
     // Find the user's cart
-    let cart = await Cart.findOne({ user_id });
-
-    if (!cart) {
-      cart = new Cart({
-        user_id,
-        cartItems: [],
-      });
-    }
+    let cart = await Cart.findOne({ user_id: user_id });
 
     // Check if the dish is already in the cart
     const existingCartItem = cart.cartItems.find((item) =>
@@ -42,7 +40,7 @@ const addDishToCart = async (req, res) => {
     if (existingCartItem) {
       existingCartItem.quantity += quantity;
     } else {
-      cart.cartItems.push({ dish_id, quantity });
+      cart.push({ dish_id, quantity });
     }
 
     const savedCart = await cart.save();
@@ -55,21 +53,12 @@ const addDishToCart = async (req, res) => {
 
 // Get the user's cart items
 const getCartItems = async (req, res) => {
-  const { user_id } = req.params;
-
   try {
-    const cart = await Cart.findOne({ user_id }).populate(
-      'cartItems.dish_id',
-      'name price'
-    );
-    if (!cart) {
-      return res.status(404).json({ message: 'Cart not found' });
-    }
-
-    res.json(cart.cartItems);
+    const userId = req.query.user_id;
+    const cartItems = await Cart.find({ user_id: userId }).populate('dish_id');
+    res.status(200).json(cartItems);
   } catch (error) {
-    console.error('Error getting cart items:', error);
-    res.status(500).json({ error: 'Failed to get cart items' });
+    return res.status(500).json({ error: 'Failed to get cart items' });
   }
 };
 

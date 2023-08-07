@@ -82,8 +82,8 @@ const cartService = require('../utils/cartService');
  */
 
 routes.post('/addcart', cartController.createCart);
-routes.get('/cartItems/:user_id', cartController.getCartItems);
-routes.post('/cartItems', cartController.addDishToCart);
+routes.get('/cartitems', cartController.getCartItems);
+routes.post('/cartitems', cartController.addDishToCart);
 
 routes.post('/updateUserInCart', async (req, res) => {
   try {
@@ -97,3 +97,9 @@ routes.post('/updateUserInCart', async (req, res) => {
 });
 
 module.exports = routes;
+
+
+/////////////////////////
+
+
+
