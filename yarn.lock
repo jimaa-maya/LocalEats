@@ -3216,12 +3216,12 @@
     "function-bind" "^1.1.1"
     "get-intrinsic" "^1.0.2"
 
-call-me-maybe@^1.0.1:
+"call-me-maybe@^1.0.1:
   version "1.0.2"
   resolved "https://registry.npmjs.org/call-me-maybe/-/call-me-maybe-1.0.2.tgz"
   integrity sha512-HpX65o1Hnr9HH25ojC1YGs7HCQLq0GCOibSaWER0eNpgJ/Z1MZv2mTc7+xh6WOPxbRVcmgbv4hGU+uSQ/2xFZQ==
 
-"caller-callsite@^2.0.0":
+caller-callsite@^2.0.0":
   "integrity" "sha512-JuG3qI4QOftFsZyOn1qq87fq5grLIyk1JYd5lJmdA+fG7aQ9pA/i3JIJGcO3q0MrRcHlOt1U+ZeHW8Dq9axALQ=="
   "resolved" "https://registry.npmjs.org/caller-callsite/-/caller-callsite-2.0.0.tgz"
   "version" "2.0.0"

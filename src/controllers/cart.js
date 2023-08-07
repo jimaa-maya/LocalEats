@@ -1,6 +1,5 @@
 const Cart = require('../models/cart');
 
-
 const createCart = async (req, res) => {
   const { user_id } = req.body;
 
@@ -8,10 +7,10 @@ const createCart = async (req, res) => {
     const userIdString = user_id.toString();
 
     const cart = new Cart({
-      user_id: userIdString, 
+      user_id: userIdString,
       cartItems: [],
     });
-console.log(cart);
+    console.log(cart);
 
     const savedCart = await cart.save();
     res.status(201).json(savedCart);
@@ -20,7 +19,6 @@ console.log(cart);
     res.status(500).json({ error: 'Failed to create cart' });
   }
 };
-
 
 const addDishToCart = async (req, res) => {
   const { user_id, dish_id, quantity } = req.body;
@@ -37,7 +35,9 @@ const addDishToCart = async (req, res) => {
     }
 
     // Check if the dish is already in the cart
-    const existingCartItem = cart.cartItems.find((item) => item.dish_id.equals(dish_id));
+    const existingCartItem = cart.cartItems.find((item) =>
+      item.dish_id.equals(dish_id)
+    );
 
     if (existingCartItem) {
       existingCartItem.quantity += quantity;
@@ -58,7 +58,10 @@ const getCartItems = async (req, res) => {
   const { user_id } = req.params;
 
   try {
-    const cart = await Cart.findOne({ user_id }).populate('cartItems.dish_id', 'name price');
+    const cart = await Cart.findOne({ user_id }).populate(
+      'cartItems.dish_id',
+      'name price'
+    );
     if (!cart) {
       return res.status(404).json({ message: 'Cart not found' });
     }
