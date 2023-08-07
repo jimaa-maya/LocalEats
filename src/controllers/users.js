@@ -169,31 +169,3 @@ exports.deleteUser = async (req, res) => {
         res.status(500).json({ error: 'Failed to delete the user.' });
     }
 };
-
-exports.updateAddress = async (req,res) =>{
-    
-    try{
-        const userId = req.params.id;
-        const userBody = req.body;
-        const user = await User.findByIdAndUpdate(userId, userBody,{new: true});
-        if(!user){
-            res.status(400).json({error: 'user not found!'})
-        }
-
-    }catch(err){
-        console.log(err)
-    }
-}
-
-exports.getAddress = async (req,res) =>{
-    try{
-        const userId = req.params.id;
-        const user = await User.findById(userId);
-        if(!user){
-            res.status(400).json({err: 'user not found'})
-        }
-        res.status(200).json(user.address);
-    }catch(err){
-        console.log(err)
-    }
-}
