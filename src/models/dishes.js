@@ -18,15 +18,11 @@ const reviewSchema = mongoose.Schema(
 
 const dishesSchema = mongoose.Schema(
   {
-    dish_id: {
-      type: mongoose.Schema.Types.ObjectId,
-      unique: true,
-      // no need to set a default here
-    },
     user_id: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
       ref: 'Users',
+      index: true,
     },
     dishName: {
       type: String,
@@ -37,6 +33,7 @@ const dishesSchema = mongoose.Schema(
     },
     image_url: {
       type: Buffer,
+      required: false,
     },
     price: {
       type: Number,
@@ -59,11 +56,11 @@ const dishesSchema = mongoose.Schema(
 );
 
 // pre-save middleware to generate dish_id b4 saving
-dishesSchema.pre('save', function (next) {
+/* dishesSchema.pre('save', function (next) {
   if (!this.dish_id) {
     this.dish_id = mongoose.Types.ObjectId();
   }
   next();
-});
+}); */
 
 module.exports = mongoose.model('Dishes', dishesSchema);
