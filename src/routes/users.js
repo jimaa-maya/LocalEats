@@ -9,6 +9,5 @@ router.post('/', userController.createUser);
 router.get('/:id', checkAuth.authenticate, userController.getUserById);
 router.put('/:id', checkAuth.authenticate, userController.updateUser);
 router.delete('/:id', checkAuth.authenticate, userController.deleteUser);
-router.put('/:id/address', checkAuth.authenticate, userController.updateAddress);
-router.get('/:id/address',checkAuth.authenticate, userController.getAddress);
+
 module.exports = router;
