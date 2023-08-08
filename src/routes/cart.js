@@ -15,16 +15,16 @@ const cartService = require('../utils/cartService');
  *            - quantity
  *
  *          example:
- *              title: The Pragmatic Programmer
- *              author: Andy Hunt / Dave Thomas
- *              finished: true
+ *              user_id: 123
+ *              dish_id: 555
+ *              quantity: 2
  */
 
 /**
  * @swagger
  * tags:
  *   name: Cart
- *   description: The books managing API
+ *   description: The cart managing API
  * /cart:
  *   post:
  *     summary: Create new cart
@@ -97,9 +97,3 @@ routes.post('/updateUserInCart', async (req, res) => {
 });
 
 module.exports = routes;
-
-
-/////////////////////////
-
-
-

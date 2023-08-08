@@ -5,15 +5,11 @@ const connectToMongo = require('./db/connection');
 const cookieParser = require('cookie-parser');
 require('./middleware/passport-setup');
 const apiRoutes = require('./routes');
-const swaggerJsdoc = require("swagger-jsdoc");
-const swaggerUi = require("swagger-ui-express");
-const cart = require('./models/cart');
+const swaggerJsdoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
 
 const app = express();
 const port = 3000;
-
-
-
 
 app.use(express.json());
 app.set('view engine', 'ejs');
@@ -35,34 +31,38 @@ app.use(passport.initialize());
 
 const options = {
   definition: {
-    openapi: "3.0.0",
+    openapi: '3.0.0',
     info: {
-      title: "Local eat API with Swagger",
-      version: "0.1.0",
+      title: 'Local eat API with Swagger',
+      version: '0.1.0',
       description:
-        "This is a simple API application made with Express and documented with Swagger",
+        'This is a simple API application made with Express and documented with Swagger',
       license: {
-        name: "MIT",
-        url: "https://spdx.org/licenses/MIT.html",
+        name: 'MIT',
+        url: 'https://spdx.org/licenses/MIT.html',
       },
       contact: {
-        name: "Your Name",
-        url: "https://re-coded.com",
-        email: "youremail@email.com",
+        name: 'Your Name',
+        url: 'https://re-coded.com',
+        email: 'youremail@email.com',
       },
     },
     servers: [
       {
-        url: "http://localhost:3000",
+        url: 'http://localhost:3000',
       },
     ],
   },
-  
+
   apis: [`src/routes/cart.js`],
 };
 
 const specs = swaggerJsdoc(options);
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs, { explorer: true }));
+app.use(
+  '/api-docs',
+  swaggerUi.serve,
+  swaggerUi.setup(specs, { explorer: true })
+);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
