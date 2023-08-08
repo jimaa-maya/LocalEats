@@ -23,7 +23,28 @@ const { authenticate } = require('../middleware/checkAuth');
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/User'
+ *             type: object
+ *             properties:
+ *               userName:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *                 format: email
+ *               password:
+ *                 type: string
+ *                 format: password
+ *               address:
+ *                 type: object
+ *                 properties:
+ *                   // Define address properties here
+ *               phoneNumber:
+ *                 type: number
+ *               role:
+ *                 type: string
+ *             required:
+ *               - userName
+ *               - email
+ *               - password
  *     responses:
  *       200:
  *         description: User registered successfully
@@ -31,6 +52,7 @@ const { authenticate } = require('../middleware/checkAuth');
  *         description: Invalid input
  */
 routes.post('/signup', signUp);
+
 
 /**
  * @swagger
@@ -44,7 +66,15 @@ routes.post('/signup', signUp);
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/UserCredentials'
+ *             type: object
+ *             properties:
+ *               userName:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *             required:
+ *               - userName
+ *               - password
  *     responses:
  *       200:
  *         description: Authentication successful
@@ -52,6 +82,7 @@ routes.post('/signup', signUp);
  *         description: Authentication failed
  */
 routes.post('/signin', signIn);
+
 
 /**
  * @swagger

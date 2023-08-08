@@ -1,52 +1,44 @@
 const Cart = require('../models/cart');
-
+const express = require('express');
 
 const createCart = async (req, res) => {
-  const { user_id } = req.body;
-
   try {
-    const userIdString = user_id.toString();
+    const { user_id, dish_id, quantity } = req.body;
+    // validation to ensure required fields are present
+    if (!user_id || !dish_id || !quantity) {
+      return res.status(400).json({ error: 'dish_id and quantity are required fields' });
+    }
 
-    const cart = new Cart({
-      user_id: userIdString, 
-      cartItems: [],
-    });
-console.log(cart);
-
-    const savedCart = await cart.save();
+    const cart = {
+      user_id: user_id,
+      dish_id: dish_id,
+      quantity: quantity,
+    };
+    const savedCart = await Cart.create(cart);
     res.status(201).json(savedCart);
+    
   } catch (error) {
-    console.error('Error creating cart:', error);
-    res.status(500).json({ error: 'Failed to create cart' });
+    res.status(400).json({ error: 'Failed to create carttttt' });
   }
 };
-
 
 const addDishToCart = async (req, res) => {
   const { user_id, dish_id, quantity } = req.body;
 
   try {
-    // Find the user's cart
-    let cart = await Cart.findOne({ user_id });
+    // Find the user's cart item
+    let cartItem = await Cart.findOne({ user_id: user_id, dish_id: dish_id });
 
-    if (!cart) {
-      cart = new Cart({
-        user_id,
-        cartItems: [],
-      });
-    }
-
-    // Check if the dish is already in the cart
-    const existingCartItem = cart.cartItems.find((item) => item.dish_id.equals(dish_id));
-
-    if (existingCartItem) {
-      existingCartItem.quantity += quantity;
+    if (!cartItem) {
+      // Create a new cart item if none exists for the user and dish
+      cartItem = await Cart.create({ user_id, dish_id, quantity });
     } else {
-      cart.cartItems.push({ dish_id, quantity });
+      // If the cart item exists, update the quantity
+      cartItem.quantity += quantity;
+      await cartItem.save();
     }
 
-    const savedCart = await cart.save();
-    res.status(201).json(savedCart);
+    res.status(201).json(cartItem);
   } catch (error) {
     console.error('Error adding dish to cart:', error);
     res.status(500).json({ error: 'Unable to add dish to cart' });
@@ -55,20 +47,17 @@ const addDishToCart = async (req, res) => {
 
 // Get the user's cart items
 const getCartItems = async (req, res) => {
-  const { user_id } = req.params;
-
   try {
-    const cart = await Cart.findOne({ user_id }).populate('cartItems.dish_id', 'name price');
-    if (!cart) {
-      return res.status(404).json({ message: 'Cart not found' });
-    }
-
-    res.json(cart.cartItems);
+    const userId = req.params.user_id;
+    console.log(userId)
+    const cartItems = await Cart.find({ user_id: userId });
+    res.status(200).json(cartItems);
   } catch (error) {
-    console.error('Error getting cart items:', error);
+    console.error('Error retrieving cart items:', error);
     res.status(500).json({ error: 'Failed to get cart items' });
   }
 };
+
 
 module.exports = {
   createCart,
