@@ -59,6 +59,7 @@ const options = {
   },
   
   apis: [`src/routes/cart.js`],
+  apis: [`src/routes/users.js`],
 };
 
 const specs = swaggerJsdoc(options);
