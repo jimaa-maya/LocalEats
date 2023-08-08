@@ -12,8 +12,9 @@ const app = express();
 const port = 3000;
 
 app.use(express.json());
-app.set('view engine', 'ejs');
+
 app.set('views', './views');
+app.set('view engine', 'ejs');
 app.use(cookieParser(process.env.SECRET_KEY));
 app.use(passport.initialize());
 
@@ -22,12 +23,12 @@ connectToMongo();
 
 // API Routes
 app.use('/api', apiRoutes);
-
+app.use(passport.initialize());
 // Home Route
+// Attention: when we want to see the ejs dont npm start, go to the folder and node app.js
 app.get('/', (req, res) => {
   res.render('home');
 });
-app.use(passport.initialize());
 
 const options = {
   definition: {
