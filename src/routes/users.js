@@ -5,7 +5,7 @@ const checkAuth = require('../middleware/checkAuth');
 
 // Define routes without '/users' at the beginning
 router.get('/', checkAuth.authenticate, userController.getAllUsers);
-router.post('/', checkAuth.authenticate, userController.createUser);
+router.post('/', userController.createUser);
 router.get('/:id', checkAuth.authenticate, userController.getUserById);
 router.put('/:id', checkAuth.authenticate, userController.updateUser);
 router.delete('/:id', checkAuth.authenticate, userController.deleteUser);
