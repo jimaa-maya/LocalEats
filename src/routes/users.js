@@ -40,108 +40,153 @@ const checkAuth = require('../middleware/checkAuth');
 */
 
 /**
- * @swagger
- *      /users:
- *         post:
- *           summary: Create new user
- *           tags: [User]
- *           requestBody:
- *             required: true
- *             content:
- *               application/json:
- *                 schema:
- *                   $ref: '#/models/users'
- *           responses:
- *             201:
- *               description: The created user.
- *               content:
- *                 application/json:
- *                   schema:
- *                     $ref: '#/models/user'
- *             500:
- *               description: Some server error
- *             400:
- *               description: Invalid request
- *         get:
- *           summary: Get all users data
- *           tags: [User]
- *           requestBody:
- *             required: true
- *             content:
- *               application/json:
- *                 schema:
- *                   $ref: '#/models/users'
- *           responses:
- *             200:
- *               description: Users details.
- *               content:
- *                 application/json:
- *                   schema:
- *                     $ref: '#/models/users'
- *             500:
- *               description: Some server error
- * 
- *       /users/:id :
- *         put:
- *           summary: Update a user's data
- *           tags: [User]
- *           requestBody:
- *             required: true
- *             content:
- *               application/json:
- *                 schema:
- *                   $ref: '#/models/users'
- *           responses:
- *             200:
- *               description: Updated user's data.
- *               content:
- *                 application/json:
- *                   schema:
- *                     $ref: '#/models/cart'
- *            400:
- *               description: Invalid request
- *            404:
- *               description: User not found
- *            500:
- *               description: Some server error
- *         get:
- *           summary: Get a user data.
- *           tags: [User]
- *           requestBody:
- *             required: true
- *             content:
- *               application/json:
- *                 schema:
- *                   $ref: '#/models/users'
- *           responses:
- *             200:
- *               description: The created book.
- *               content:
- *                 application/json:
- *                   schema:
- *                     $ref: '#/models/cart'
- *             500:
- *               description: Some server error
- *          delete:
- *           summary: Delete a user.
- *           tags: [User]
- *           requestBody:
- *             required: true
- *             content:
- *               application/json:
- *                 schema:
- *                   $ref: '#/models/users'
- *           responses:
- *             200:
- *               description: User deleted.
- *            400:
- *               description: Invalid request
- *            404:
- *               description: User not found
- *            500:
- *               description: Some server error
- */
-
+* @swagger
+*info:
+*  title: User Management API
+*  description: API for managing user data
+*  version: 1.0.0
+*paths:
+*  /users:
+*    post:
+*      summary: Create a new user
+*      requestBody:
+*        required: true
+*        content:
+*          application/json:
+*            schema:
+*              $ref: '#/components/schemas/UserInput'
+*      responses:
+*        '201':
+*          description: User created successfully
+*          content:
+*            application/json:
+*              schema:
+*                $ref: '#/components/schemas/User'
+*        '400':
+*          description: Bad request
+*    get:
+*      summary: Get all users
+*      responses:
+*        '200':
+*          description: List of users
+*          content:
+*            application/json:
+*              schema:
+*                type: array
+*                items:
+*                  $ref: '#/components/schemas/User'
+*        '500':
+*          description: Internal server error
+*  /users/{userId}:
+*    get:
+*      summary: Get a user by ID
+*      parameters:
+*        - in: path
+*          name: userId
+*          required: true
+*          schema:
+*            type: string
+*          description: ID of the user to retrieve
+*      responses:
+*        '200':
+*          description: User details
+*          content:
+*            application/json:
+*              schema:
+*                $ref: '#/components/schemas/User'
+*        '400':
+*          description: Bad request
+*        '404':
+*          description: User not found
+*        '500':
+*          description: Internal server error
+*    put:
+*      summary: Update a user by ID
+*      parameters:
+*        - in: path
+*          name: userId
+*          required: true
+*          schema:
+*            type: string
+*          description: ID of the user to update
+*      requestBody:
+*        required: true
+*        content:
+*          application/json:
+*            schema:
+*              $ref: '#/components/schemas/UserInput'
+*      responses:
+*        '200':
+*          description: User updated successfully
+*          content:
+*            application/json:
+*              schema:
+*                $ref: '#/components/schemas/User'
+*        '400':
+*          description: Bad request
+*        '404':
+*          description: User not found
+*        '500':
+*          description: Internal server error
+*    delete:
+*      summary: Delete a user by ID
+*      parameters:
+*        - in: path
+*          name: userId
+*          required: true
+*          schema:
+*            type: string
+*          description: ID of the user to delete
+*      responses:
+*        '200':
+*          description: User deleted successfully
+*        '400':
+*          description: Bad request
+*        '404':
+*          description: User not found
+*        '500':
+*          description: Internal server error
+*components:
+*  schemas:
+*    User:
+*      type: object
+*      properties:
+*        _id:
+*          type: string
+*          description: User ID
+*        userName:
+*          type: string
+*          description: User name
+*        email:
+*          type: string
+*          description: User email
+*        createdAt:
+*          type: string
+*          format: date-time
+*          description: User creation timestamp
+*        updatedAt:
+*          type: string
+*          format: date-time
+*          description: User last update timestamp
+*      required:
+*        - _id
+*        - userName
+*        - email
+*        - createdAt
+*        - updatedAt
+*    UserInput:
+*      type: object
+*      properties:
+*        userName:
+*          type: string
+*          description: User name
+*        email:
+*          type: string
+*          description: User email
+*      required:
+*        - userName
+*        - email
+*/
 
 // Define routes without '/users' at the beginning
 router.get('/', checkAuth.authenticate, userController.getAllUsers);
