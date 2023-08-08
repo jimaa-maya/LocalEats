@@ -5,13 +5,13 @@ const SALT_COST_FACTOR = 10; //salt rounds
 Schema = mongoose.Schema;
 
 const addressSchema = new Schema({
-  address_id: {
+  /*address_id: {
     type: String,
     default: function () {
       return new mongoose.Types.ObjectId().toHexString();
     },
     unique: true,
-  },
+  },*/
   apartmentNo: {
     //Not required since might be a house (no apartment number).
     type: Number,
