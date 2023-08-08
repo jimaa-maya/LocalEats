@@ -1,14 +1,14 @@
 const Cart = require('../models/cart');
 
-
 const createCart = async (req, res) => {
-  
   try {
     const { user_id, dish_id, quantity } = req.body;
-    console.log(user_id)
+    console.log(user_id);
     // validation to ensure required fields are present
     if (!user_id || !dish_id || !quantity) {
-      return res.status(400).json({ error: 'dish_id and quantity are required fields' });
+      return res
+        .status(400)
+        .json({ error: 'dish_id and quantity are required fields' });
     }
 
     const cart = {
@@ -16,12 +16,11 @@ const createCart = async (req, res) => {
       dish_id: dish_id,
       quantity: quantity,
     };
-    console.log(cart)
+    console.log(cart);
     const savedCart = await Cart.create(cart);
     res.status(201).json(savedCart);
-    
   } catch (error) {
-    res.status(400).json({ error: 'Failed to create carttttt' });
+    res.status(400).json({ error: 'Failed to create cart' });
   }
 };
 
@@ -54,7 +53,7 @@ const addDishToCart = async (req, res) => {
 // Get the user's cart items
 const getCartItems = async (req, res) => {
   try {
-    const userId = req.query.user_id;
+    const userId = req.params.user_id;
     const cartItems = await Cart.find({ user_id: userId }).populate('dish_id');
     res.status(200).json(cartItems);
   } catch (error) {

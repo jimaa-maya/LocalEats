@@ -14,6 +14,17 @@ const cartService = require('../utils/cartService');
  *            - dish_id
  *            - quantity
  *
+ *          properties:
+ *            user_id:
+ *              type: String
+ *              description: The id given for a specific cart
+ *            dish_id:
+ *              type: String
+ *              description: the given for the dish
+ *            status:
+ *              type: String
+ *              description: show the status for the cart
+ *
  *          example:
  *              user_id: 123
  *              dish_id: 555
@@ -24,7 +35,7 @@ const cartService = require('../utils/cartService');
  * @swagger
  * tags:
  *   name: Cart
- *   description: The cart managing API
+ *   description: Cart managing API
  * /cart:
  *   post:
  *     summary: Create new cart
@@ -34,51 +45,52 @@ const cartService = require('../utils/cartService');
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/models/cart'
+ *             $ref: '#/components/schemas/Cart'
  *     responses:
  *       200:
  *         description: The created book.
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/models/cart'
+ *               $ref: '#/components/schemas/Cart'
+ *       400:
+ *         description: user_id,dish_id and quantity are required fields
  *       500:
- *         description: Some server error
- * /cartitems/add:
+ *         description: Failed to create cart
+ * /cart/cartitems:
  *   post:
- *     summary: Update cart
+ *     summary: Add A dish to the cart
  *     tags: [Cart]
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/models/cartitems/add'
+ *             $ref: '#/components/schemas/Cart'
  *     responses:
  *       200:
  *         description: The created book.
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/models/cart'
- * /cartitems:
+ *               $ref: '#/components/schemas/Cart'
  *   get:
- *     summary: Get cart
+ *     summary: Get cart with the user_id
  *     tags: [Cart]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/models/cartitems/add'
+ *     parameters:
+ *       - in: parameter
+ *         user_id: user_id
+ *         schema:
+ *           type: string
+ *
+ *         description: Id of the cart
  *     responses:
  *       200:
  *         description: The created book.
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/models/cart'
- *
+ *               $ref: '#/components/schemas/Cart'
  */
 
 routes.post('/addcart', cartController.createCart);
