@@ -7,7 +7,6 @@ require('./middleware/passport-setup');
 const apiRoutes = require('./routes');
 const swaggerJsdoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
-const cart = require('./models/cart');
 
 const app = express();
 const port = 3000;
@@ -53,13 +52,16 @@ const options = {
     },
     servers: [
       {
-        url: "http://localhost:3000",
+        url: "http://localhost:3000/api/sign",
       },
     ],
   },
   
-  apis: [`src/routes/cart.js`],
-  apis: [`src/routes/users.js`],
+  apis: [
+    'src/routes/cart.js', 
+    'src/routes/sign.js',
+    'src/routes/users.js'
+  ],
 };
 
 const specs = swaggerJsdoc(options);
