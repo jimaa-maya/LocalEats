@@ -18,6 +18,11 @@ const { param } = require('express-validator');
  *   schemas:
  *     Order:
  *       type: object
+ *       required:
+ *         - user_id
+ *         - dish_id
+ *         - quantity
+ * 
  *       properties:
  *         user_id:
  *           type: string
@@ -33,11 +38,11 @@ const { param } = require('express-validator');
  *           description: The status of requested dish order 
  *         otherInfo:
  *           type: string
- *             $ref: '#/models/orders'
- *           required:
- *         - user_id
- *         - dish_id
- *         - quantity
+ *             
+ *       example:
+ *           user_id: 64d273aa8e8a0d531db1dec8
+ *           dish_id: 64cbcdee5ed1bde7ee8f1ae5
+ *           quantity: 2
  */
 
 /**
