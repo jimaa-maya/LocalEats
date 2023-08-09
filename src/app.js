@@ -9,7 +9,7 @@ const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 
 const app = express();
-const port = 3000;
+const port = 3001;
 
 app.use(express.json());
 
@@ -70,6 +70,7 @@ app.use(
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
+  
 });
 
 module.exports = app;

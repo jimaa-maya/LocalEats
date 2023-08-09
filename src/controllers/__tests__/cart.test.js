@@ -133,3 +133,35 @@ describe('Creating cart', () => {
       });
   });
 });
+// Test createCart function
+// describe('createCart', () => {
+//   it('should create a new cart', async () => {
+//     const newCart = {
+//       user_id: 'user123',
+//       dish_id: 'dish456',
+//       quantity: 2,
+//     };
+
+//     const response = await request(app).post('/api/cart/cart').send(newCart);
+//     console.log(response.body)
+//     expect(response.status).to.equal(200);
+//     expect(response.body).to.have.property('_id');
+//     expect(response.body.user_id).to.equal('user123');
+//     expect(response.body.dish_id).to.equal('dish456');
+//     expect(response.body.quantity).to.equal(2);
+//   });
+
+//   it('should return a 400 error when required fields are missing', async () => {
+//     const invalidCart = {
+//       user_id: 'user789',
+//       // dish_id is missing
+//     };
+
+//     const response = await request(app).post('/cart').send(invalidCart);
+
+//     expect(response.status).to.equal(400);
+//     expect(response.body).to.deep.equal({ error: 'dish_id and quantity are required fields' });
+//   });
+
+//   // Add more test cases as needed
+// });
