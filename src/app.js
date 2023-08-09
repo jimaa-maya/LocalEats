@@ -1,12 +1,12 @@
 require('dotenv').config();
 const express = require('express');
 const passport = require('passport');
-const connectToMongo = require('./db/connection');
 const cookieParser = require('cookie-parser');
 require('./middleware/passport-setup');
-const apiRoutes = require('./routes');
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
+const connectToMongo = require('./db/connection');
+const apiRoutes = require('./routes');
 
 const app = express();
 const port = 3001;
@@ -58,7 +58,12 @@ const options = {
     ],
   },
 
-  apis: ['src/routes/cart.js', 'src/routes/sign.js', 'src/routes/users.js'],
+  apis: [
+    'src/routes/dishes.js',
+    'src/routes/cart.js',
+    'src/routes/sign.js',
+    'src/routes/users.js',
+  ],
 };
 
 const specs = swaggerJsdoc(options);
@@ -70,7 +75,6 @@ app.use(
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
-  
 });
 
 module.exports = app;
