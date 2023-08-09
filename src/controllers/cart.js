@@ -29,8 +29,16 @@ const addDishToCart = async (req, res) => {
   const { user_id, dish_id, quantity } = req.body;
 
   try {
-    // Find the user's cart
-    let cart = await Cart.findOne({ user_id });
+    const { user_id, dish_id, quantity } = req.body;
+
+    // validation to ensure required fields are present
+    if (!user_id || !dish_id || !quantity) {
+      return res
+        .status(400)
+        .json({ error: 'user_id, dish_id, and quantity are required fields' });
+    }
+
+    const cart = await Cart.findOne({ user_id: null });
 
     if (!cart) {
       cart = new Cart({
