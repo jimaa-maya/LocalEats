@@ -54,7 +54,7 @@ exports.getAllUsers = async (req, res) => {
                 
         // If authorization is successful, fetch all users
         const users = await User.find();
-        res.json(users);
+        res.status(200).json(users);
     } catch (error) {
         // Handle unexpected server-side errors
         res.status(500).json({ error: 'Failed to get all users.' });
@@ -82,7 +82,7 @@ exports.getUserById = async (req, res) => {
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
       }
-        res.json(user);
+        res.status(200).json(user);
     } catch (error) {
         res.status(500).json({ error: 'Failed to get the user' });
     }
@@ -125,7 +125,7 @@ exports.updateUser = async (req, res) => {
         }
 
         // User update successful
-        res.json(user);
+        res.status(200).json(user);
     } catch (error) {
         // Handle unexpected server-side errors
         res.status(500).json({ error: 'Failed to update the user.' });
@@ -163,37 +163,9 @@ exports.deleteUser = async (req, res) => {
         }
 
         // User deletion successful
-        res.json({ message: 'User deleted successfully' });
+        res.status(200).json({ message: 'User deleted successfully' });
     } catch (error) {
         // Handle unexpected server-side errors
         res.status(500).json({ error: 'Failed to delete the user.' });
     }
 };
-
-exports.updateAddress = async (req,res) =>{
-    
-    try{
-        const userId = req.params.id;
-        const userBody = req.body;
-        const user = await User.findByIdAndUpdate(userId, userBody,{new: true});
-        if(!user){
-            res.status(400).json({error: 'user not found!'})
-        }
-
-    }catch(err){
-        console.log(err)
-    }
-}
-
-exports.getAddress = async (req,res) =>{
-    try{
-        const userId = req.params.id;
-        const user = await User.findById(userId);
-        if(!user){
-            res.status(400).json({err: 'user not found'})
-        }
-        res.status(201).json(user.address);
-    }catch(err){
-        console.log(err)
-    }
-}

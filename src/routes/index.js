@@ -8,6 +8,9 @@ const cartRoutes = require('./cart');
 const authRoutes = require('./auth');
 const signRoutes = require('./sign');
 const dishRoutes = require('./dishes');
+const signRoutes = require('./sign');
+const signRoutes = require('./sign');
+const cartRoutes = require('./cart');
 
 routes.use('/auth', authRoutes);
 routes.use('/sign', signRoutes);

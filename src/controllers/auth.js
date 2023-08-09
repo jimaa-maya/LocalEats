@@ -4,17 +4,12 @@ const User = require('../models/users');
 const { generateToken } = require('../middleware/checkAuth');
 const sendEmail = require('../utils/email');
 
-const sendEmail = require('../utils/email');
-
 require('dotenv').config();
-
-
 
 const signUp = async (req, res) => {
   console.log('Request Body:', req.body);
 
   try {
-    
     // Check if user already exists in the database
     const existingUserByEmail = await User.findOne({ email: req.body.email });
     if (existingUserByEmail) {
@@ -36,7 +31,6 @@ const signUp = async (req, res) => {
 
     // Generate and set the JWT token for the newly signed-up user
     const token = generateToken(newUser);
-
 
     // Send the welcome email to the user
     const subject = 'Welcome to LocalEats!';
@@ -62,26 +56,22 @@ The LocalEats Team`;
   }
 };
 
-
-
-
-
-
 const signIn = async (req, res) => {
   try {
     const { userName, password } = req.body;
 
     if (!userName || !password) {
-      return res.status(400).json({ message: 'Username and password are required' });
+      return res
+        .status(400)
+        .json({ message: 'Username and password are required' });
     }
 
     // Find the user in the database
     const user = await User.findOne({ userName });
     if (!user) {
       return res.status(401).json({ message: 'Invalid username or password' });
-
-        }
-            // Compare the provided password with the hashed password stored in the database
+    }
+    // Compare the provided password with the hashed password stored in the database
     const passwordMatch = await bcrypt.compare(password, user.password);
     if (!passwordMatch) {
       return res.status(401).json({ message: 'Invalid username or password' });
@@ -102,24 +92,18 @@ const signIn = async (req, res) => {
   }
 };
 
-
-
 const signOut = (req, res) => {
-    try {
-        res.clearCookie('token'); 
+  try {
+    res.clearCookie('token');
 
+    res.json({ message: 'Sign-out successful' });
 
-        res.json({ message: 'Sign-out successful' });
-
-        //res.redirect('/');
-    } catch (error) {
-        console.error('Error in signOut controller:', error);
-        res.status(500).json({ message: 'Internal server error' });
-    }
+    //res.redirect('/');
+  } catch (error) {
+    console.error('Error in signOut controller:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
 };
-
-
-
 
 const resetPassword = async (req, res) => {
   try {
@@ -143,7 +127,8 @@ const resetPassword = async (req, res) => {
 
     // Send password reset confirmation email
     const subject = 'Password Reset Confirmation';
-    const resetConfirmationMessage = 'Your password has been successfully reset.';
+    const resetConfirmationMessage =
+      'Your password has been successfully reset.';
     sendEmail(user.email, subject, resetConfirmationMessage);
 
     res.json({ message: 'Password reset successful' });
@@ -152,7 +137,5 @@ const resetPassword = async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 };
-
-
 
 module.exports = { signUp, signIn, signOut, resetPassword };
