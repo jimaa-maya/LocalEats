@@ -1,4 +1,5 @@
 const Cart = require('../models/cart');
+const express = require('express');
 
 const createCart = async (req, res) => {
   try {
@@ -11,13 +12,13 @@ const createCart = async (req, res) => {
         .json({ error: 'dish_id and quantity are required fields' });
     }
 
-    const cart = {
-      user_id: user_id,
-      dish_id: dish_id,
-      quantity: quantity,
-    };
+    const cart = new Cart({
+      user_id: userIdString,
+      cartItems: [],
+    });
     console.log(cart);
-    const savedCart = await Cart.create(cart);
+
+    const savedCart = await cart.save();
     res.status(201).json(savedCart);
   } catch (error) {
     res.status(400).json({ error: 'Failed to create cart' });
@@ -29,7 +30,14 @@ const addDishToCart = async (req, res) => {
 
   try {
     // Find the user's cart
-    let cart = await Cart.findOne({ user_id: user_id });
+    let cart = await Cart.findOne({ user_id });
+
+    if (!cart) {
+      cart = new Cart({
+        user_id,
+        cartItems: [],
+      });
+    }
 
     // Check if the dish is already in the cart
     const existingCartItem = cart.cartItems.find((item) =>
@@ -39,11 +47,12 @@ const addDishToCart = async (req, res) => {
     if (existingCartItem) {
       existingCartItem.quantity += quantity;
     } else {
-      cart.push({ dish_id, quantity });
+      // If the cart item exists, update the quantity
+      cartItem.quantity += quantity;
+      await cartItem.save();
     }
 
-    const savedCart = await cart.save();
-    res.status(201).json(savedCart);
+    res.status(201).json(cartItem);
   } catch (error) {
     console.error('Error adding dish to cart:', error);
     res.status(500).json({ error: 'Unable to add dish to cart' });
@@ -53,11 +62,18 @@ const addDishToCart = async (req, res) => {
 // Get the user's cart items
 const getCartItems = async (req, res) => {
   try {
-    const userId = req.params.user_id;
-    const cartItems = await Cart.find({ user_id: userId }).populate('dish_id');
-    res.status(200).json(cartItems);
+    const cart = await Cart.findOne({ user_id }).populate(
+      'cartItems.dish_id',
+      'name price'
+    );
+    if (!cart) {
+      return res.status(404).json({ message: 'Cart not found' });
+    }
+
+    res.json(cart.cartItems);
   } catch (error) {
-    return res.status(500).json({ error: 'Failed to get cart items' });
+    console.error('Error retrieving cart items:', error);
+    res.status(500).json({ error: 'Failed to get cart items' });
   }
 };
 

@@ -52,10 +52,13 @@ const options = {
       {
         url: 'http://localhost:3000/api',
       },
+      {
+        url: 'http://localhost:3000/api/sign',
+      },
     ],
   },
 
-  apis: [`src/routes/cart.js`],
+  apis: ['src/routes/cart.js', 'src/routes/sign.js', 'src/routes/users.js'],
 };
 
 const specs = swaggerJsdoc(options);
