@@ -1,267 +1,135 @@
+// const request = require('supertest');
+// const app = require('../../app');
+// const Cart = require('../../models/cart');
+
+// let userId="123";
+// let dishId="123";
+
+// // beforeAll(async () => {
+
+// //   userId = '123';
+
+// //   dishId = '123';
+// // });
+
+// describe('Cart Controllers - createCart', () => {
+//   it('should create a new cart', async () => {
+//     const requestBody = {
+//       user_id: userId,
+//     };
+
+//     const response = await request(app)
+//       .post('/api/cart/addcart')
+//       .send(requestBody);
+
+//     expect(response.status).toBe(201);
+//     expect(response.body).toHaveProperty('cart_id');
+//     expect(response.body.user_id).toEqual(requestBody.user_id);
+//     expect(response.body.cartItems).toHaveLength(0);
+//   });
+// });
+
+// describe('Cart Controllers - addDishToCart', () => {
+//   it('should add a dish to the cart', async () => {
+//     const requestBody = {
+//       user_id: userId,
+//       dish_id: dishId,
+//       quantity: 2,
+//     };
+
+//     const response = await request(app)
+//       .post('/api/cart/cartItems?user_id=')
+//       .send(requestBody);
+
+//     expect(response.status).toBe(201);
+//     expect(response.body).toHaveProperty('cart_id');
+//     expect(response.body.user_id).toEqual(requestBody.user_id);
+//     expect(response.body.cartItems).toHaveLength(1);
+//     expect(response.body.cartItems[0].dish_id).toEqual(requestBody.dish_id);
+//     expect(response.body.cartItems[0].quantity).toEqual(requestBody.quantity);
+//   });
+// });
+
+// describe('Cart Controllers - getCartItems', () => {
+//     it('should get cart items for a user', async () => {
+//       const response = await request(app).get(`/api/cart/cartItems/${userId}`);
+//       expect(response.status).toBe(200);
+//       expect(response.body).toEqual([
+//         {
+//           _id: expect.any(String),
+//           dish_id: expect.objectContaining({
+//             _id: '64cbee1da34043e084a6929b',
+//             price: 10.99,
+//           }),
+//           quantity: 2,
+//         },
+//       ]);
+//     });
+
+//     it('should return 200 and an array containing an object with specific properties if cart not found for the user', async () => {
+//       const invalidUserId = '64c91e14224bf98633eb9970';
+//       const response = await request(app).get(`/api/cart/cartItems/${invalidUserId}`);
+//       expect(response.status).toBe(200);
+//       expect(response.body).toEqual([
+//         {
+//           _id: expect.any(String),
+//           dish_id: expect.objectContaining({
+//             _id: '64cbee1da34043e084a6929b',
+//             price: 10.99,
+//           }),
+//           quantity: 2,
+//         },
+//       ]);
+//     });
+//   });
+
 const request = require('supertest');
 const expect = require('chai').expect;
-const express = require('express');
-const app = express();
+// const connectToMongo = require('../../db/connection')
+// connectToMongo();
+const app = require('../../app');
 
-// Import the Cart model and controller functions
-const Cart = require('../models/cart');
-const {
-  createCart,
-  getCartItems,
-  addDishToCart,
-} = require('../controllers/cart');
+const newCart = {
+  user_id: 'user123',
+  dish_id: 'dish456',
+  quantity: 2,
+};
 
-// Set up a test endpoint to simulate the Express routes
-app.post('/cart', createCart);
-app.get('/cart', getCartItems);
-app.put('/cart/add-dish', addDishToCart);
-
-describe('Cart Controller Tests', () => {
-  beforeEach(() => {
-    // Mock the Cart model methods for testing
-    Cart.save = jest.fn();
-    Cart.find = jest.fn();
-    Cart.findOne = jest.fn();
+describe('Creating cart', () => {
+  it('POST /api/cart/cart it in the response', (done) => {
+    request(app)
+      .post('/api/cart/addcart')
+      .set('Content-Type', 'application/json')
+      .send(newCart)
+      .expect(201, async (err, res) => {
+        if (err) return done(err);
+        expect(res.body.user_id).to.equal('user123');
+        expect(res.body.dish_id).to.equal('dish456');
+        expect(res.body.quantity).to.equal(2);
+        done();
+      });
   });
 
-  afterEach(() => {
-    jest.clearAllMocks();
+  it('get /api/cart/cartitems? it in the response', (done) => {
+    request(app)
+      .get('/api/cart/cartitems?user_id=user123')
+      .expect(200, async (err, res) => {
+        if (err) return done(err);
+        expect(res.body[0].quantity).to.equal(2);
+        done();
+      });
   });
 
-  // Test createCart function
-  describe('POST /cart', () => {
-    it('should create a new cart', async () => {
-      const mockRequest = {
-        body: {
-          user_id: 'user123',
-          dish_id: 'dish123',
-          quantity: 2,
-        },
-      };
-
-      const mockResponse = {
-        json: jest.fn((data) => data),
-        status: jest.fn((code) => ({
-          json: jest.fn((error) => error),
-        })),
-      };
-
-      Cart.prototype.save.mockResolvedValue(mockRequest.body);
-
-      await createCart(mockRequest, mockResponse);
-
-      expect(mockResponse.json).toHaveBeenCalledWith(mockRequest.body);
-      expect(mockResponse.status).not.toHaveBeenCalled();
-    });
-
-    it('should return a 400 error when required fields are missing', async () => {
-      const mockRequest = {
-        body: {
-          user_id: 'user123',
-        },
-      };
-
-      const mockResponse = {
-        json: jest.fn((data) => data),
-        status: jest.fn((code) => ({
-          json: jest.fn((error) => error),
-        })),
-      };
-
-      await createCart(mockRequest, mockResponse);
-
-      expect(mockResponse.json).not.toHaveBeenCalled();
-      expect(mockResponse.status).toHaveBeenCalledWith(400);
-    });
-
-    it('should return a 500 error when an error occurs while creating the cart', async () => {
-      const mockRequest = {
-        body: {
-          user_id: 'user123',
-          dish_id: 'dish123',
-          quantity: 2,
-        },
-      };
-
-      const mockResponse = {
-        json: jest.fn((data) => data),
-        status: jest.fn((code) => ({
-          json: jest.fn((error) => error),
-        })),
-      };
-
-      Cart.prototype.save.mockRejectedValue(new Error('Mocked error'));
-
-      await createCart(mockRequest, mockResponse);
-
-      expect(mockResponse.json).not.toHaveBeenCalled();
-      expect(mockResponse.status).toHaveBeenCalledWith(500);
-    });
-  });
-
-  // Test getCartItems function
-  describe('GET /cart', () => {
-    it('should return cart items for a user', async () => {
-      const mockRequest = {
-        query: {
-          user_id: 'user123',
-        },
-      };
-
-      const mockResponse = {
-        json: jest.fn((data) => data),
-        status: jest.fn((code) => ({
-          json: jest.fn((error) => error),
-        })),
-      };
-
-      const mockCartItems = [
-        {
-          _id: 'cart123',
-          user_id: 'user123',
-          dish_id: { _id: 'dish123', name: 'Dish 1', price: 10.99 },
-          quantity: 2,
-        },
-        {
-          _id: 'cart456',
-          user_id: 'user123',
-          dish_id: { _id: 'dish456', name: 'Dish 2', price: 15.99 },
-          quantity: 1,
-        },
-      ];
-
-      Cart.find.mockResolvedValue(mockCartItems);
-
-      await getCartItems(mockRequest, mockResponse);
-
-      expect(mockResponse.json).toHaveBeenCalledWith(mockCartItems);
-      expect(mockResponse.status).not.toHaveBeenCalled();
-    });
-
-    it('should return a 500 error when an error occurs while fetching cart items', async () => {
-      const mockRequest = {
-        query: {
-          user_id: 'user123',
-        },
-      };
-
-      const mockResponse = {
-        json: jest.fn((data) => data),
-        status: jest.fn((code) => ({
-          json: jest.fn((error) => error),
-        })),
-      };
-
-      Cart.find.mockRejectedValue(new Error('Mocked error'));
-
-      await getCartItems(mockRequest, mockResponse);
-
-      expect(mockResponse.json).not.toHaveBeenCalled();
-      expect(mockResponse.status).toHaveBeenCalledWith(500);
-    });
-  });
-
-  // Test addDishToCart function
-  describe('PUT /cart/add-dish', () => {
-    it('should add a dish to the cart', async () => {
-      const mockRequest = {
-        body: {
-          user_id: 'user123',
-          dish_id: 'dish123',
-          quantity: 2,
-        },
-      };
-
-      const mockResponse = {
-        json: jest.fn((data) => data),
-        status: jest.fn((code) => ({
-          json: jest.fn((error) => error),
-        })),
-      };
-
-      const mockCart = {
-        _id: 'cart123',
-        user_id: null,
-        dish_id: 'dish456',
-        quantity: 1,
-      };
-
-      Cart.findOne.mockResolvedValue(mockCart);
-      Cart.prototype.save.mockResolvedValue(mockRequest.body);
-
-      await addDishToCart(mockRequest, mockResponse);
-
-      expect(mockResponse.json).toHaveBeenCalledWith(mockRequest.body);
-      expect(mockResponse.status).toHaveBeenCalledWith(201);
-    });
-
-    it('should return a 400 error when required fields are missing', async () => {
-      const mockRequest = {
-        body: {
-          user_id: 'user123',
-          dish_id: 'dish123',
-        },
-      };
-
-      const mockResponse = {
-        json: jest.fn((data) => data),
-        status: jest.fn((code) => ({
-          json: jest.fn((error) => error),
-        })),
-      };
-
-      await addDishToCart(mockRequest, mockResponse);
-
-      expect(mockResponse.json).not.toHaveBeenCalled();
-      expect(mockResponse.status).toHaveBeenCalledWith(400);
-    });
-
-    it('should return a 404 error when the cart is not found', async () => {
-      const mockRequest = {
-        body: {
-          user_id: 'user123',
-          dish_id: 'dish123',
-          quantity: 2,
-        },
-      };
-
-      const mockResponse = {
-        json: jest.fn((data) => data),
-        status: jest.fn((code) => ({
-          json: jest.fn((error) => error),
-        })),
-      };
-
-      Cart.findOne.mockResolvedValue(null);
-
-      await addDishToCart(mockRequest, mockResponse);
-
-      expect(mockResponse.json).not.toHaveBeenCalled();
-      expect(mockResponse.status).toHaveBeenCalledWith(404);
-    });
-
-    it('should return a 500 error when an error occurs while adding a dish to the cart', async () => {
-      const mockRequest = {
-        body: {
-          user_id: 'user123',
-          dish_id: 'dish123',
-          quantity: 2,
-        },
-      };
-
-      const mockResponse = {
-        json: jest.fn((data) => data),
-        status: jest.fn((code) => ({
-          json: jest.fn((error) => error),
-        })),
-      };
-
-      Cart.findOne.mockRejectedValue(new Error('Mocked error'));
-
-      await addDishToCart(mockRequest, mockResponse);
-
-      expect(mockResponse.json).not.toHaveBeenCalled();
-      expect(mockResponse.status).toHaveBeenCalledWith(500);
-    });
+  it('POST /api/cart/cartitems it in the response', (done) => {
+    request(app)
+      .post('/api/cart/cartitems')
+      .set('Content-Type', 'application/json')
+      .send(newCart2)
+      .expect(201, async (err, res) => {
+        if (err) return done(err);
+        expect(res.body.user_id).to.equal('user123');
+        expect(res.body.dish_id).to.equal('dish999');
+        done();
+      });
   });
 });
