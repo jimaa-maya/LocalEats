@@ -36,7 +36,7 @@ const options = {
   definition: {
     openapi: "3.0.0",
     info: {
-      title: "Local eat API with Swagger",
+      title: "Local eat APIs with Swagger",
       version: "0.1.0",
       description:
         "This is a simple API application made with Express and documented with Swagger",
@@ -60,7 +60,8 @@ const options = {
   apis: [
     'src/routes/cart.js', 
     'src/routes/sign.js',
-    'src/routes/users.js'
+    'src/routes/users.js',
+    'src/routes/orders.js'
   ],
 };
 
