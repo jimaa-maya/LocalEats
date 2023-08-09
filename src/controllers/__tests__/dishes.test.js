@@ -17,11 +17,11 @@ const {
   fetchDishImage,
   getDishesByLocation,
   createDish,
-  updateDish,
-  updateDishImage,
+  // updateDish,
+  // updateDishImage,
   removeDish,
-  addReview,
-  updateReview,
+  // addReview,
+  // updateReview,
 } = require('../dishes');
 const Dishes = require('../../models/dishes');
 const Users = require('../../models/users');
@@ -89,7 +89,7 @@ describe('Dishes Controller', () => {
 describe('filterDishes', () => {
   it('should return filtered dishes based on dishType and preference', async () => {
     // preparing a mock request and filtered dish data
-    const req = { body: { dishType: 'Type 1', preference: 'Preference 1' } };
+    const req = { body: { dishType: 'Type 1', preferences: 'Preference 1' } };
     const mockFilteredDishes = [
       {
         _id: '1',

@@ -47,7 +47,7 @@ const getDishById = async (req, res) => {
 
 // filtering dishes based on dishType and preference
 const filterDishes = async (req, res) => {
-  const { dishType, preference } = req.body;
+  const { dishType, preferences } = req.body;
 
   try {
     const query = {};
@@ -56,11 +56,14 @@ const filterDishes = async (req, res) => {
       query.dishType = { $in: [dishType] };
     }
 
-    if (preference) {
-      query.preferences = { $in: [preference] };
+    if (preferences) {
+      query.preferences = { $in: [preferences] };
     }
+    console.log(preferences);
+    console.log(dishType);
 
     const filteredDishes = await Dishes.find(query);
+    console.log(filteredDishes);
 
     return res.json(filteredDishes);
   } catch (error) {
@@ -144,7 +147,7 @@ const fetchDishImage = async (req, res) => {
 
 const createDish = async (req, res) => {
   // eslint-disable-next-line no-unused-vars, camelcase
-  const { dishName, description, price, dishType } = req.body;
+  const { dishName, description, price, dishType, preferences } = req.body;
 
   try {
     // checking if image is uploaded
@@ -176,6 +179,7 @@ const createDish = async (req, res) => {
       description,
       price,
       dishType,
+      preferences,
       // eslint-disable-next-line camelcase
       image_url: imageUrl,
       // eslint-disable-next-line no-underscore-dangle
@@ -191,9 +195,28 @@ const createDish = async (req, res) => {
   }
 };
 
+// removing a dish (dish owners allowed)
+const removeDish = async (req, res) => {
+  const { _id } = req.params;
+
+  try {
+    const removedDish = await Dishes.findByIdAndRemove(_id);
+
+    if (!removedDish) {
+      return res.status(404).json({ message: 'Dish not found' });
+    }
+
+    return res.json(removedDish);
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: 'An error occurred while removing the dish' });
+  }
+};
+
 // updating dish (for dish owners)
 
-const updateDish = async (req, res) => {
+/* const updateDish = async (req, res) => {
   const { _id } = req.params;
   const { dishName, description, price, dishType } = req.body;
 
@@ -277,28 +300,10 @@ const updateDishImage = async (req, res) => {
     return res.status(500).json({ message: 'Failed to update dish image' });
   }
 };
-
-// removing a dish (dish owners allowed)
-const removeDish = async (req, res) => {
-  const { _id } = req.params;
-
-  try {
-    const removedDish = await Dishes.findByIdAndRemove(_id);
-
-    if (!removedDish) {
-      return res.status(404).json({ message: 'Dish not found' });
-    }
-
-    return res.json(removedDish);
-  } catch (error) {
-    return res
-      .status(500)
-      .json({ message: 'An error occurred while removing the dish' });
-  }
-};
+*/
 
 // adding a dish review (customer only)
-const addReview = async (req, res) => {
+/* const addReview = async (req, res) => {
   try {
     const { _id } = req.params;
     const { review, rating } = req.body;
@@ -401,6 +406,7 @@ const updateReview = async (req, res) => {
       .json({ error: 'An error occurred while updating review' });
   }
 };
+*/
 
 module.exports = {
   getAllDishes,
@@ -410,9 +416,9 @@ module.exports = {
   fetchDishImage,
   getDishesByLocation,
   createDish,
-  updateDish,
-  updateDishImage,
+  // updateDish,
+  // updateDishImage,
   removeDish,
-  addReview,
-  updateReview,
+  // addReview,
+  // updateReview,
 };

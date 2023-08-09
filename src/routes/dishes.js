@@ -8,8 +8,6 @@ require('dotenv').config();
 const dishesController = require('../controllers/dishes');
 // const checkAuth = require('../middleware/checkAuth');
 
-// SWAGGER
-
 /**
  * @swagger
  * tags:
@@ -46,7 +44,7 @@ const dishesController = require('../controllers/dishes');
  *         review:
  *           type: array
  *           items:
- *             $ref: '#/models/dishes'
+ *             $ref: '#/components/schemas/Dish'
  *           description: Array of review objects
  *         dishType:
  *           type: array
@@ -58,6 +56,8 @@ const dishesController = require('../controllers/dishes');
  *           items:
  *             type: string
  *           description: Array of dish preferences
+ *         dishLocation:
+ *           $ref: '#/components/schemas/Address'
  *       required:
  *         - user_id
  *         - dishName
@@ -89,7 +89,9 @@ const dishesController = require('../controllers/dishes');
  *         description: Dish not found
  *       500:
  *         description: An error occurred while fetching the dish
+ */
 
+/**
  * @swagger
  * /dishes:
  *   get:
@@ -106,7 +108,9 @@ const dishesController = require('../controllers/dishes');
  *                 $ref: '#/components/schemas/Dish'
  *       500:
  *         description: An error occurred while fetching the dishes
+ */
 
+/**
  * @swagger
  * /dishes/create:
  *   post:
@@ -129,15 +133,17 @@ const dishesController = require('../controllers/dishes');
  *         description: Invalid input or missing fields
  *       500:
  *         description: Failed to create dish
+ */
 
+/**
  * @swagger
- * /dishes/{dishId}:
+ * /dishes/{_id}:
  *   delete:
  *     summary: Delete a dish
  *     tags: [Dishes]
  *     parameters:
  *       - in: path
- *         name: dishId
+ *         name: _id
  *         schema:
  *           type: string
  *         required: true
@@ -154,6 +160,66 @@ const dishesController = require('../controllers/dishes');
  *       500:
  *         description: An error occurred while deleting the dish
  */
+/**
+ * @swagger
+ * /dishes/images:
+ *   get:
+ *     summary: Get all dish images
+ *     tags: [Dishes]
+ *     responses:
+ *       200:
+ *         description: List of all dish images
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   _id:
+ *                     type: string
+ *                     description: The ID of the dish
+ *                   imageUrl:
+ *                     type: string
+ *                     format: binary
+ *                     description: Base64-encoded image data
+ *       500:
+ *         description: Failed to fetch dish images. Please try again later.
+ */
+
+/**
+ * @swagger
+ * /dishes/images/{_id}:
+ *   get:
+ *     summary: Get a specific dish image by dish ID
+ *     tags: [Dishes]
+ *     parameters:
+ *       - in: path
+ *         name: _id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: ID of the dish
+ *     responses:
+ *       200:
+ *         description: Dish image details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 _id:
+ *                   type: string
+ *                   description: The ID of the dish
+ *                 imageUrl:
+ *                   type: string
+ *                   format: binary
+ *                   description: Base64-encoded image data
+ *       404:
+ *         description: Dish image not available
+ *       500:
+ *         description: An error occurred while fetching the dish image
+ */
 
 // multer config
 const multer = Multer({
@@ -163,6 +229,33 @@ const multer = Multer({
   },
 });
 
+// Only cooks allowed
+routes.post(
+  '/create',
+  // checkAuth.authenticate,
+  // checkAuth.isCook,
+  multer.single('image_url'),
+  dishesController.createDish
+); // Create a new dish
+
+// GET Routes
+routes.get('/images/:_id', dishesController.fetchDishImage); // Get a specific dish image by dish ID
+routes.get('/location', dishesController.getDishesByLocation); // Get dishes by location
+routes.get('/filter', dishesController.filterDishes); // Filter dishes based on certain criteria
+routes.get('/images', dishesController.fetchAllDishImages); // Get all dish images
+routes.get('/:id', dishesController.getDishById); // Get a specific dish by ID
+routes.get('/', dishesController.getAllDishes); // Get all dishes
+
+// NOTE: create a image update func and route.
+
+routes.delete(
+  '/:_id',
+  // checkAuth.authenticate,
+  // checkAuth.isCook,
+  dishesController.removeDish
+); // Delete a dish
+
+/*
 routes.put(
   '/:dishId',
   // checkAuth.authenticate,
@@ -178,34 +271,6 @@ routes.put(
   dishesController.updateDishImage
 ); // Update an existing dish
 
-// Only cooks allowed
-routes.post(
-  '/create',
-  // checkAuth.authenticate,
-  // checkAuth.isCook,
-  multer.single('image_url'),
-  dishesController.createDish
-); // Create a new dish
-
-// GET Routes
-routes.get('/images/:dishId', dishesController.fetchDishImage); // Get a specific dish image by dish ID
-routes.get('/location', dishesController.getDishesByLocation); // Get dishes by location
-routes.get('/filter', dishesController.filterDishes); // Filter dishes based on certain criteria
-routes.get('/images', dishesController.fetchAllDishImages); // Get all dish images
-routes.get('/:id', dishesController.getDishById); // Get a specific dish by ID
-routes.get('/', dishesController.getAllDishes); // Get all dishes
-
-// NOTE: create a image update func and route.
-
-routes.delete(
-  '/:dishId',
-  // checkAuth.authenticate,
-  // checkAuth.isCook,
-  dishesController.removeDish
-); // Delete a dish
-
-// Only customers allowed
-
 routes.post(
   '/:dishId/reviews',
   // checkAuth.authenticate,
@@ -219,5 +284,6 @@ routes.put(
   // checkAuth.isUser,
   dishesController.updateReview
 ); // Update a review for a dish
+*/
 
 module.exports = routes;
