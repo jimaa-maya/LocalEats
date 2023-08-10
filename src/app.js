@@ -58,11 +58,13 @@ const options = {
     ],
   },
 
+
   apis: [
     'src/routes/dishes.js',
     'src/routes/cart.js',
     'src/routes/sign.js',
     'src/routes/users.js',
+     'src/routes/orders.js'
   ],
 };
 
