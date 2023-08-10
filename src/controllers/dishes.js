@@ -78,9 +78,18 @@ const getDishesByLocation = async (req, res) => {
   const { city, country } = req.query;
 
   try {
+
+    // find the users with matching location
+
+    const users = await User.find({
+      'address.city': city,
+      'adress.province': province,
+      'role' : 'cook',
+    }).select('user_id');
+
+    // fetch the dishes
     const dishes = await Dishes.find({
-      'user_id.address.city': city,
-      'user_id.address.country': country,
+      'user_id': users,
     });
 
     return res.json(dishes);
