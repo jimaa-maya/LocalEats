@@ -1,12 +1,12 @@
 require('dotenv').config();
 const express = require('express');
 const passport = require('passport');
-const connectToMongo = require('./db/connection');
 const cookieParser = require('cookie-parser');
 require('./middleware/passport-setup');
-const apiRoutes = require('./routes');
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
+const connectToMongo = require('./db/connection');
+const apiRoutes = require('./routes');
 
 const app = express();
 const port = 3001;
@@ -34,13 +34,8 @@ const options = {
   definition: {
     openapi: '3.0.0',
     info: {
-<<<<<<< HEAD
-      title: "Local eat APIs with Swagger",
-      version: "0.1.0",
-=======
       title: 'Local eat API with Swagger',
       version: '0.1.0',
->>>>>>> main
       description:
         'This is a simple API application made with Express and documented with Swagger',
       license: {
@@ -62,18 +57,15 @@ const options = {
       },
     ],
   },
-<<<<<<< HEAD
-  
+
+
   apis: [
-    'src/routes/cart.js', 
+    'src/routes/dishes.js',
+    'src/routes/cart.js',
     'src/routes/sign.js',
     'src/routes/users.js',
-    'src/routes/orders.js'
+     'src/routes/orders.js'
   ],
-=======
-
-  apis: ['src/routes/cart.js', 'src/routes/sign.js', 'src/routes/users.js'],
->>>>>>> main
 };
 
 const specs = swaggerJsdoc(options);
@@ -85,7 +77,6 @@ app.use(
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
-  
 });
 
 module.exports = app;
