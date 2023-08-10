@@ -9,7 +9,7 @@ const connectToMongo = require('./db/connection');
 const apiRoutes = require('./routes');
 
 const app = express();
-const port = 3001;
+const port = 3000;
 
 app.use(express.json());
 
@@ -58,13 +58,12 @@ const options = {
     ],
   },
 
-
   apis: [
     'src/routes/dishes.js',
     'src/routes/cart.js',
     'src/routes/sign.js',
     'src/routes/users.js',
-     'src/routes/orders.js'
+    'src/routes/orders.js',
   ],
 };
 

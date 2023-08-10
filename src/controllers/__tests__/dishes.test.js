@@ -119,7 +119,7 @@ describe('filterDishes', () => {
   });
 });
 
-describe('getDishesByLocation', () => {
+/* describe('getDishesByLocation', () => {
   it('should return dishes matching the provided city and country', async () => {
     // mocking res and mocked data
     const req = { query: { city: 'City 1', country: 'Country 1' } };
@@ -146,7 +146,7 @@ describe('getDishesByLocation', () => {
     });
     expect(res.json).toHaveBeenCalledWith(mockDishesByLocation);
   });
-});
+}); */
 
 describe('fetchAllDishImages', () => {
   it('should return all dish images with base64 encoding', async () => {

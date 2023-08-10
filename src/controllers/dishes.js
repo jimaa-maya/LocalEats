@@ -74,7 +74,7 @@ const filterDishes = async (req, res) => {
 };
 
 // searching nearby dishes
-const getDishesByLocation = async (req, res) => {
+/* const getDishesByLocation = async (req, res) => {
   const { city, country } = req.query;
 
   try {
@@ -83,7 +83,7 @@ const getDishesByLocation = async (req, res) => {
 
     const users = await User.find({
       'address.city': city,
-      'adress.province': province,
+      'adress.country': country,
       'role' : 'cook',
     }).select('user_id');
 
@@ -99,7 +99,7 @@ const getDishesByLocation = async (req, res) => {
       .json({ message: 'Failed to fetch dishes by location.' });
   }
 };
-
+*/
 // getting all the images of dishes
 const fetchAllDishImages = async (req, res) => {
   try {
@@ -423,7 +423,7 @@ module.exports = {
   getDishById,
   fetchAllDishImages,
   fetchDishImage,
-  getDishesByLocation,
+  // getDishesByLocation,
   createDish,
   // updateDish,
   // updateDishImage,

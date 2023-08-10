@@ -240,7 +240,7 @@ routes.post(
 
 // GET Routes
 routes.get('/images/:_id', dishesController.fetchDishImage); // Get a specific dish image by dish ID
-routes.get('/location', dishesController.getDishesByLocation); // Get dishes by location
+// routes.get('/location', dishesController.getDishesByLocation); // Get dishes by location
 routes.get('/filter', dishesController.filterDishes); // Filter dishes based on certain criteria
 routes.get('/images', dishesController.fetchAllDishImages); // Get all dish images
 routes.get('/:id', dishesController.getDishById); // Get a specific dish by ID
